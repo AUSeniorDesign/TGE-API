@@ -1,4 +1,4 @@
-## TGEAPIReact
+## The Great Escape API / React App
 
 React Web project with ExpressJS on NodeJS
 
@@ -40,17 +40,6 @@ React is a framework for creating user interfaces in modular components.
 
   `bx plugin install dev -r bluemix`
 
-
-#### IBM Cloud DevOps setup (optional)
-
-[![Create Toolchain](https://console.ng.bluemix.net/devops/graphics/create_toolchain_button.png)](https://console.ng.bluemix.net/devops/setup/deploy/)
-
-[IBM Cloud DevOps](https://www.ibm.com/cloud-computing/bluemix/devops) services provides toolchains as a set of tool integrations that support development, deployment, and operations tasks inside Bluemix. The "Create Toolchain" button creates a DevOps toolchain and acts as a single-click deploy to IBM Cloud including provisioning all required services. 
-
-***Note** you must publish your project to [Github](https://github.com/) for this to work.
-
-
-
 <a name="configuration"></a>
 ### Configuration
 
@@ -69,6 +58,16 @@ bx dev build
 bx dev run
 ```
 
+If you encounter `'dev' is not a registered command. See 'bx help'.` make sure you have installed the IBM Cloud CLI:
+
+On macOS and Linux:
+```
+curl -sL https://ibm.biz/idt-installer | bash
+```
+Windows:
+```
+Set-ExecutionPolicy Unrestricted; iex(New-Object Net.WebClient).DownloadString('http://ibm.biz/idt-win-installer')
+```
 
 #### Using your local development environment
 
