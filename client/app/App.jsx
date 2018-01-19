@@ -7,10 +7,10 @@ export default class App extends React.Component {
                 <div className="hero-body">
                     <div className="container">
                         <h1 className="title">
-                            Congratulations
+                            The Great Escape
                         </h1>
                         <h2 className="subtitle">
-                            You are currently running a NodeJS server.
+                            Admin Portal
                         </h2>
                     </div>
                 </div>
