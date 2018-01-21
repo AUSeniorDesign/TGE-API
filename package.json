@@ -13,7 +13,6 @@
     "dev": "nf --procfile Procfile-dev --port 3000 start",
     "build": "webpack --progress --config webpack.prod.js",
     "postinstall": "npm run build",
-    "lint": "eslint src",
     "client-reload": "webpack-dev-server --history-api-fallback --progress --inline --config webpack.dev-standalone.js",
     "server-reload": "nodemon server/server.js"
   },
@@ -23,6 +22,8 @@
     "appmetrics-dash": "^3.4.0",
     "appmetrics-prometheus": "^0.0.2",
     "body-parser": "^1.17.2",
+    "eslint": "^4.16.0",
+    "eslint-config-google": "^0.9.1",
     "express": "^4.15.3",
     "ibm-cloud-env": "^0",
     "knex": "^0.14.2",
