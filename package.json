@@ -28,6 +28,7 @@
     "log4js": "^1.1.1",
     "mysql2": "^1.5.1",
     "passport": "^0.4.0",
+    "passport-facebook": "^2.1.1",
     "sequelize": "^4.31.2"
   },
   "devDependencies": {
