@@ -1,4 +1,4 @@
-var express = require('express');
+const express = require('express');
 
 module.exports = function(app) {
   router = express.Router();
