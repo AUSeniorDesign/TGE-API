@@ -8,15 +8,21 @@ const passport = require('passport');
 const Strategy = require('passport-facebook').Strategy;
 const localConfig = require('./config/local.json');
 const path = require('path');
-
 const logger = log4js.getLogger(appName);
-const app = express();
+const bodyParser = require('body-parser')
 const serviceManager = require('./services/service-manager');
+
+const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
 require('./services/index')(app);
 require('./routes/index')(app);
 
 app.set('models', require('./models'));
 
+
+// Passport
 app.use(passport.initialize())
 app.use(passport.session())
 
@@ -36,7 +42,7 @@ app.use(passport.session())
 
 const port = process.env.PORT || localConfig.port;
 
-app.get('models').sequelize.sync({ force: true }).then(function () {
+app.get('models').sequelize.sync().then(function () {
   app.listen(port, function () {
     logger.info(`TGEAPIReact listening on http://localhost:${port}/appmetrics-dash`);
     logger.info(`TGEAPIReact listening on http://localhost:${port}`);

@@ -5,6 +5,7 @@ var config = require(path.join(__dirname, '..', 'config', 'local.json'))[env];
 var app = require('../server.js');
 
 const Sequelize = require('sequelize');
+
 const sequelize = new Sequelize('mainDb', null, null, {
   dialect: 'sqlite',
   storage: '../tge.sqlite'
