@@ -1,7 +1,7 @@
 {
   "name": "tgeapireact",
   "version": "1.0.0",
-  "description": "A generated IBM Cloud application",
+  "description": "A server architecture for The Great Escape's e-Commerce",
   "private": true,
   "engines": {
     "node": "^6.9.0"
@@ -24,12 +24,12 @@
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "ibm-cloud-env": "^0",
-    "knex": "^0.14.2",
     "log4js": "^1.1.1",
     "mysql2": "^1.5.1",
     "passport": "^0.4.0",
     "passport-facebook": "^2.1.1",
-    "sequelize": "^4.31.2"
+    "sequelize": "^4.31.2",
+    "sqlite3": "^3.1.13"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

@@ -4,6 +4,29 @@ var passport = require('passport')
 module.exports = function (app) {
     var router = express.Router();
 
+    // Create User
+    router.post('/', function (req, res) {
+        models.User.create({
+            facebook_id: req.body.facebook_id,
+            name: req.body.name
+        })
+        .save()
+        .then(function () {
+            res.redirect('/');
+        })
+        .spread((user, created) => {
+            console.log(user.get({
+              plain: true
+            }))
+            console.log(created)
+        });
+    });
+
+    // Get User by ID
+    router.get('/:id', function (req, res, next) {
+
+    });
+
     // Login
     router.post('/login', function (req, res, next) {
         passport.use(new FacebookStrategy({
@@ -19,10 +42,7 @@ module.exports = function (app) {
         ));
     });
 
-    // Get User by ID
-    router.get('/:id', function (req, res, next) {
-
-    });
+    
 
     app.use("/users", router);
 }

@@ -15,11 +15,7 @@ const serviceManager = require('./services/service-manager');
 require('./services/index')(app);
 require('./routes/index')(app);
 
-const port = process.env.PORT || localConfig.port;
-app.listen(port, function () {
-  logger.info(`TGEAPIReact listening on http://localhost:${port}/appmetrics-dash`);
-  logger.info(`TGEAPIReact listening on http://localhost:${port}`);
-});
+app.set('models', require('./models'));
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -36,6 +32,17 @@ app.use(passport.session())
 //   }
 // ));
 
+
+
+const port = process.env.PORT || localConfig.port;
+
+app.get('models').sequelize.sync({ force: true }).then(function () {
+  app.listen(port, function () {
+    logger.info(`TGEAPIReact listening on http://localhost:${port}/appmetrics-dash`);
+    logger.info(`TGEAPIReact listening on http://localhost:${port}`);
+  });
+});
+
 app.use(function (req, res, next) {
   res.sendFile(path.join(__dirname, '../public/assets', '404.html'));
 })
@@ -43,3 +50,5 @@ app.use(function (req, res, next) {
 app.use(function (err, req, res, next) {
   res.sendFile(path.join(__dirname, '../public/assets', '500.html'));
 })
+
+module.exports = app;

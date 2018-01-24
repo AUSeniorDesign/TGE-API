@@ -1,12 +1,19 @@
 var fs = require("fs");
 var path = require("path");
-var Sequelize = require("sequelize");
 var env = process.env.NODE_ENV || "development";
-var config = require(path.join(__dirname, '..', 'config', 'config.json'))[env];
-var sequelize = new Sequelize(config.database, config.username, config.password, config);
+var config = require(path.join(__dirname, '..', 'config', 'local.json'))[env];
+var app = require('../server.js');
+
+const Sequelize = require('sequelize');
+const sequelize = new Sequelize('mainDb', null, null, {
+  dialect: 'sqlite',
+  storage: '../tge.sqlite'
+});
+
 var db = {};
 
 /**
+ * Imports all models and creates relationships.
  * Establishes system-wide access to the 'models' module
  */
 
