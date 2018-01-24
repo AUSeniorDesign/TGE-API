@@ -19,6 +19,7 @@ app.use(bodyParser.json());
 require('./services/index')(app);
 require('./routes/index')(app);
 
+// Configure app models (see models/index.js)
 app.set('models', require('./models'));
 
 
@@ -39,20 +40,23 @@ app.use(passport.session())
 // ));
 
 
-
 const port = process.env.PORT || localConfig.port;
 
-app.get('models').sequelize.sync().then(function () {
+// Make sure models / db is configured and start up express app
+const clearOutDatabase = false; // Set to true if you want db to be reset when app starts
+app.get('models').sequelize.sync({ force: clearOutDatabase }).then(function () {
   app.listen(port, function () {
     logger.info(`TGEAPIReact listening on http://localhost:${port}/appmetrics-dash`);
     logger.info(`TGEAPIReact listening on http://localhost:${port}`);
   });
 });
 
+// Configure 404 page
 app.use(function (req, res, next) {
   res.sendFile(path.join(__dirname, '../public/assets', '404.html'));
 })
 
+// Configure 500 Error page
 app.use(function (err, req, res, next) {
   res.sendFile(path.join(__dirname, '../public/assets', '500.html'));
 })

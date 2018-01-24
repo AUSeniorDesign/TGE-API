@@ -1,3 +1,4 @@
+// http://sequelize.readthedocs.io/en/v3/
 module.exports = (sequelize, DataTypes) => {
     var Order = sequelize.define('Order', {
       shippingAddress: DataTypes.JSON,

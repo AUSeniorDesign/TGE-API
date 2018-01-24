@@ -14,7 +14,7 @@ const sequelize = new Sequelize('mainDb', null, null, {
 var db = {};
 
 /**
- * Imports all models and creates relationships.
+ * Imports all models in 'models' directory, and creates relationships.
  * Establishes system-wide access to the 'models' module
  */
 
