@@ -39,6 +39,37 @@ module.exports = function (app) {
             });
     });
 
+    // Update User
+    router.put('/:id', function (req, res, next) {
+        // TODO: Validate this request is coming from own User
+        User.update(req.body, {
+            where: {
+              id: req.params.id
+            }
+          })
+          .then(function (updatedRecords) {
+            res.status(200).json(updatedRecords);
+          })
+          .catch(function (error){
+            res.status(500).json(error);
+          });    
+    });
+
+    router.delete('/:id', function (req, res, next) {
+        // TODO: Validate this request is coming from own User
+        User.destroy({
+            where: {
+              id: req.params.id
+            }
+          })
+          .then(function (deletedRecords) {
+            res.status(200).json(deletedRecords);
+          })
+          .catch(function (error){
+            res.status(500).json(error);
+          });
+    });
+    
     // #TODO: Implement Login w/ Passport.js
     router.post('/login', function (req, res, next) {
         // passport.use(new FacebookStrategy({
