@@ -23,7 +23,7 @@ require('./routes/index')(app);
 app.set('models', require('./models'));
 
 
-// Passport
+// Passport for Google and Facebook
 app.use(passport.initialize())
 app.use(passport.session())
 
