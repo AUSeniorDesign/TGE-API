@@ -9,6 +9,7 @@
   "scripts": {
     "start": "node server/server.js",
     "debug": "node --debug server/server.js",
+    "inspect": "node --inspect-brk server/server.js",
     "test": "nyc mocha",
     "dev": "nf --procfile Procfile-dev --port 3000 start",
     "build": "webpack --progress --config webpack.prod.js",

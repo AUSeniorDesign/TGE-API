@@ -1,14 +1,15 @@
-var fs = require("fs");
-var path = require("path");
-var env = process.env.NODE_ENV || "development";
-var config = require(path.join(__dirname, '..', 'config', 'local.json'))[env];
-var app = require('../server.js');
+const fs = require("fs");
+const path = require("path");
+const env = process.env.NODE_ENV || "development";
+const config = require(path.join(__dirname, '..', 'config', 'local'))[env];
+const app = require('../server.js');
 
 const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize('mainDb', null, null, {
   dialect: 'sqlite',
-  storage: '../tge.sqlite'
+  storage: 'tge.sqlite',
+  logging: false
 });
 
 var db = {};

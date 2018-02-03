@@ -5,7 +5,7 @@ const User = require('../models').User;
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
         return next();
-    res.end('Not logged in');
+    res.status(401).end('Not logged in');
 }
 
 module.exports = function (app, passport) {
@@ -13,18 +13,24 @@ module.exports = function (app, passport) {
 
     // Login
     router.post('/login', function (req, res, next) {
-          passport.authenticate('facebook');
+          passport.authenticate('facebook-token');
     });
 
     // Create User
     router.post('/', function (req, res) {
-        User.create(req.body)
+        User.findOne({ where: { facebookId: req.body.facebookId } }).then( existingUser => {
+            if (existingUser) {
+                res.status(400).end('User already exists.');
+                return;
+            }
+            User.create(req.body)
             .then(function (newUser) {
                 res.status(200).json(newUser);
             })
             .catch(function (error) {
                 res.status(500).json(error);
             });
+        });
     });
 
     // Get All Users
@@ -51,7 +57,6 @@ module.exports = function (app, passport) {
 
     // Update User
     router.put('/:id', isLoggedIn, function (req, res, next) {
-        // TODO: Validate this request is coming from own User
         User.update(req.body, {
             where: {
               id: req.params.id

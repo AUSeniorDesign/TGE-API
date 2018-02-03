@@ -5,5 +5,11 @@ module.exports = (sequelize, DataTypes) => {
       facebookId: DataTypes.STRING,
     });
 
+    // This one-to-many relationship represents 
+    // a user's shopping cart
+    User.associate = function(models) {
+      models.User.hasMany(models.Item);
+    };
+
     return User;
 };

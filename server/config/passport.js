@@ -14,8 +14,8 @@ module.exports = function (passport) {
     });
 
     passport.use(new FacebookTokenStrategy({
-        clientID: FACEBOOK_APP_ID,
-        clientSecret: FACEBOOK_APP_SECRET
+        clientID: process.env.FB_APP_ID,
+        clientSecret: process.env.FB_APP_SECRET
     }, function (accessToken, refreshToken, profile, done) {
         User.findOrCreate({ name: profile.name, facebookId: profile.id }, function (error, user) {
             return done(error, user);
