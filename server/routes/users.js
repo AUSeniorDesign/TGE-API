@@ -1,11 +1,23 @@
 const express = require('express');
 const passport = require('passport');
+const bcrypt = require('bcrypt');
+const saltRounds = 10;
 const User = require('../models').User;
 
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
         return next();
     res.status(401).end('Not logged in');
+}
+
+function hashPassword(password) {
+    bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
+        // Store hash in your password DB.
+    });
+}
+
+function verifyPassword(req, res, next) {
+
 }
 
 module.exports = function (app, passport) {

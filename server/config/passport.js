@@ -1,5 +1,4 @@
 const User = require('../models/user');
-const FacebookTokenStrategy = require('passport-facebook-token');
 
 module.exports = function (passport) {
 
@@ -13,12 +12,14 @@ module.exports = function (passport) {
         });
     });
 
-    passport.use(new FacebookTokenStrategy({
-        clientID: process.env.FB_APP_ID,
-        clientSecret: process.env.FB_APP_SECRET
-    }, function (accessToken, refreshToken, profile, done) {
-        User.findOrCreate({ name: profile.name, facebookId: profile.id }, function (error, user) {
-            return done(error, user);
-        });
-    }));
+    passport.use(new LocalStrategy(
+        function (username, password, done) {
+            User.findOne({ where: { username: username } }).then(user => {
+                if (err) { return done(err); }
+                if (!user) { return done(null, false); }
+                if (!user.verifyPassword(password)) { return done(null, false); }
+                return done(null, user);
+            });
+        }
+    ));
 };
