@@ -4,21 +4,19 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const User = require('../models').User;
 
+////////////////////////////////////////////////
+// Helper Functions
+////////////////////////////////////////////////
+
 function isLoggedIn(req, res, next) {
     if (req.isAuthenticated())
         return next();
     res.status(401).end('Not logged in');
 }
 
-function hashPassword(password) {
-    bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
-        // Store hash in your password DB.
-    });
-}
-
-function verifyPassword(req, res, next) {
-
-}
+////////////////////////////////////////////////
+// Routes
+////////////////////////////////////////////////
 
 module.exports = function (app, passport) {
     var router = express.Router();
@@ -35,13 +33,16 @@ module.exports = function (app, passport) {
                 res.status(400).end('User already exists.');
                 return;
             }
+            var password = req.body.password;
+            delete req.body.password;
             User.create(req.body)
-            .then(function (newUser) {
-                res.status(200).json(newUser);
-            })
-            .catch(function (error) {
-                res.status(500).json(error);
-            });
+                .then(function (newUser) {
+                    hashPassword(newUser, password);
+                    res.status(200).json(newUser);
+                })
+                .catch(function (error) {
+                    res.status(500).json(error);
+                });
         });
     });
 
