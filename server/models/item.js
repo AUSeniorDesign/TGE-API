@@ -5,10 +5,9 @@ module.exports = (sequelize, DataTypes) => {
       // Choosing a floating point for inventory field to be safe on the OFF chance something is sold in a weight unit
       quantity: DataTypes.DECIMAL(10, 2),
       price: DataTypes.DECIMAL(10, 2),
-      shippingCost: DataTypes.DECIMAL(10, 2),
       sku: DataTypes.STRING,
       description: DataTypes.STRING,
-      image: DataTypes.STRING,
+      images: DataTypes.STRING,
       isFeatured: DataTypes.BOOLEAN,
       productIdType: DataTypes.STRING,
       brand: DataTypes.STRING,

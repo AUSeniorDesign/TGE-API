@@ -26,13 +26,16 @@ require('./routes/index')(app, passport);
 // Configure app models (see models/index.js)
 app.set('models', require('./models'));
 
-
-
 const port = process.env.PORT || localConfig.port;
 
 // Make sure models / db is configured and start up express app
-const clearOutDatabase = false; // Set to true if you want db to be reset when app starts
+const clearOutDatabase = true; // Set to true if you want db to be reset when app starts
 app.get('models').sequelize.sync({ force: clearOutDatabase }).then(function () {
+
+  console.log('Initializing DB.....');
+  dbInit = require('./init/db_init');
+  dbInit();
+
   app.listen(port, function () {
     logger.info(`TGEAPIReact listening on http://localhost:${port}/appmetrics-dash`);
     logger.info(`TGEAPIReact listening on http://localhost:${port}`);

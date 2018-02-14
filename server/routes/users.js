@@ -1,7 +1,9 @@
 const express = require('express');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
+
 const saltRounds = 10;
+
 const User = require('../models').User;
 
 ////////////////////////////////////////////////
@@ -24,6 +26,10 @@ module.exports = function (app, passport) {
     // Login
     router.post('/login', function (req, res, next) {
           passport.authenticate('facebook-token');
+    });
+
+    router.post('/facebook-login', function (req, res, next) {
+        passport.authenticate('facebook-token');
     });
 
     // Create User

@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
   
     Order.associate = function(models) {
       models.Order.hasMany(models.Item);
-      models.Order.hasOne(models.User)
+      models.Order.belongsTo(models.User)
     };
   
     return Order;

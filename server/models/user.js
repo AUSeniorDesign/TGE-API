@@ -1,10 +1,5 @@
-// http://sequelize.readthedocs.io/en/v3/
 module.exports = (sequelize, DataTypes) => {
     var User = sequelize.define('User', {
-        username: DataTypes.STRING,
-        password: DataTypes.STRING,
-        name: DataTypes.STRING,
-        facebookId: DataTypes.STRING,
         isAdmin: DataTypes.BOOLEAN
     });
 
@@ -12,6 +7,10 @@ module.exports = (sequelize, DataTypes) => {
     // a user's shopping cart
     User.associate = function (models) {
         models.User.hasMany(models.Item);
+        models.User.hasMany(models.Order);
+        models.User.hasOne(models.Local);
+        models.User.hasOne(models.Facebook);
+        models.User.hasOne(models.Google);
     };
 
     User.hashPassword = async function hashPassword(password) {
