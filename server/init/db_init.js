@@ -9,6 +9,9 @@ var inputStream = fs.createReadStream(filePath, 'utf8');
 var Item = require('../models').Item;
 
 module.exports = function () {
+
+    var parsedFieldsRow = false;
+
     inputStream
         .pipe(CsvReadableStream({ parseNumbers: true, parseBooleans: true, trim: true }))
         .on('data', function (fields) {
@@ -22,9 +25,15 @@ module.exports = function () {
                 productIdType: fields[17],
                 brand: fields[18]
             }
+
+            if (!parsedFieldsRow) {
+                parsedFieldsRow = true;
+                return;
+            }
+
             Item.create(item)
                 .then(function (newItem) {
-                    console.log("Created: " + newItem.name);
+                    console.log('Created: ' + newItem.name);
                 })
                 .catch(function (error) {
                     console.log(error);
