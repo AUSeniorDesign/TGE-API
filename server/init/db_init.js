@@ -32,9 +32,9 @@ module.exports = function () {
             }
 
             Item.create(item)
-                .then(function (newItem) {
-                    console.log('Created: ' + newItem.name);
-                })
+                // .then(function (newItem) {
+                //     console.log('Created: ' + newItem.name);
+                // })
                 .catch(function (error) {
                     console.log(error);
                 });
