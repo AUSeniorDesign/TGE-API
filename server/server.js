@@ -32,8 +32,10 @@ const port = process.env.PORT || localConfig.port;
 const clearOutDatabase = true; // Set to true if you want db to be reset when app starts
 app.get('models').sequelize.sync({ force: clearOutDatabase }).then(function () {
 
-  var dbInit = require('./init/db_init');
-  dbInit();
+  if (clearOutDatabase) {
+    var dbInit = require('./init/db_init');
+    dbInit();
+  }
 
   app.listen(port, function () {
     logger.info(`TGEAPIReact listening on http://localhost:${port}/appmetrics-dash`);

@@ -4,6 +4,7 @@ const env = process.env.NODE_ENV || "development";
 const config = require(path.join(__dirname, '..', 'config', 'local'))[env];
 const app = require('../server.js');
 
+const sequelizeNoUpdateAttributes = require('sequelize-noupdate-attributes');
 const Sequelize = require('sequelize');
 
 const sequelize = new Sequelize('mainDb', null, null, {
@@ -11,6 +12,8 @@ const sequelize = new Sequelize('mainDb', null, null, {
   storage: 'tge.sqlite',
   logging: false
 });
+
+sequelizeNoUpdateAttributes(sequelize);
 
 var db = {};
 

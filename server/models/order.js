@@ -1,4 +1,3 @@
-// http://sequelize.readthedocs.io/en/v3/
 module.exports = (sequelize, DataTypes) => {
     var Order = sequelize.define('Order', {
       shippingAddress: DataTypes.JSON,
@@ -10,8 +9,8 @@ module.exports = (sequelize, DataTypes) => {
     });
   
     Order.associate = function(models) {
-      models.Order.hasMany(models.Item);
-      models.Order.belongsTo(models.User)
+      models.Order.hasMany(models.Item, { as: 'contents' });
+      models.Order.belongsTo(models.User, { as: 'owner' });
     };
   
     return Order;

@@ -32,14 +32,11 @@ module.exports = function () {
             }
 
             Item.create(item)
-                // .then(function (newItem) {
-                //     console.log('Created: ' + newItem.name);
-                // })
                 .catch(function (error) {
                     console.log(error);
                 });
         })
         .on('end', function (data) {
-            console.log('No more rows!');
+            console.log('Finished reading in initial product data!');
         });
 }
