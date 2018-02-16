@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
         password: DataTypes.STRING
     });
 
-    Local.hashPassword = async function hashPassword(password) {
+    Local.hashPassword = async function (password) {
         await bcrypt.hash(myPlaintextPassword, saltRounds).then(function (hash) {
             Local.update({ password: hash }, {
                 where: {
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    Local.verifyPassword = function verifyPassword(password) {
+    Local.verifyPassword = function (password) {
         bcrypt.compare(myPlaintextPassword, self.password).then(function (res) {
             if (res) {
                 return next();
