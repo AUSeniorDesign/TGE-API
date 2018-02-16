@@ -7,8 +7,8 @@ module.exports = (sequelize, DataTypes) => {
         password: DataTypes.STRING
     });
 
-    Local.hashPassword = async function (password) {
-        await bcrypt.hash(myPlaintextPassword, saltRounds).then(function (hash) {
+    Local.hashPassword = function (password) {
+        bcrypt.hash(myPlaintextPassword, saltRounds).then(function (hash) {
             Local.update({ password: hash }, {
                 where: {
                     id: this.id
