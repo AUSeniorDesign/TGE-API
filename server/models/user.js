@@ -1,22 +1,22 @@
 module.exports = (sequelize, DataTypes) => {
     var User = sequelize.define('User', {
-        isAdmin: {
-            type: DataTypes.BOOLEAN,
-            noUpdate: true
-        }
+        type: {
+            type: DataTypes.ENUM,
+            values: ['admin', 'employee', 'customer']
+          }
     });
 
     User.associate = function (models) {
         // Shopping Cart
-        models.User.hasMany(models.Item, { as: 'shoppingCart' });
+        models.User.hasMany(models.Item, { as: 'Cart' });
 
         // Order History
-        models.User.hasMany(models.Order, { as: 'orderHistory' });
+        models.User.hasMany(models.Order, { as: 'OrderHistory' });
         
         // SSOs
-        models.User.hasOne(models.Local);
-        models.User.hasOne(models.Facebook);
-        models.User.hasOne(models.Google);
+        models.User.belongsTo(models.Local, { as: 'Credentials' });
+        models.User.belongsTo(models.Facebook);
+        models.User.belongsTo(models.Google);
     };
 
     return User;
