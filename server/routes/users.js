@@ -8,6 +8,7 @@ const Facebook = require("../models").Facebook;
 const Google = require("../models").Google;
 const Local = require("../models").Local;
 
+
 ////////////////////////////////////////////////
 // Helper Functions
 ////////////////////////////////////////////////
@@ -187,39 +188,6 @@ module.exports = function(app, passport) {
       })
         .then(carts => {
           res.status(200).json(carts);
-        })
-        .catch(function(error) {
-          res.status(500).json(error);
-        });
-    });
-  });
-
-  // Get Shopping Cart
-  router.get("/:id/orders", function(req, res, next) {
-    Order.findAll({
-      where: { UserId: req.params.id },
-      include: [Item]
-    })
-      .then(carts => {
-        res.status(200).json(carts);
-      })
-      .catch(function(error) {
-        res.status(500).json(error);
-      });
-  });
-
-  // Add Item Shopping Cart
-  router.post("/:id/orders", function(req, res, next) {
-    Order.create({
-      UserId: req.params.id,
-      ItemId: req.body.itemId
-    }).then(order => {
-      Order.findAll({
-        where: { UserId: cart.UserId },
-        include: [Item]
-      })
-        .then(orders => {
-          res.status(200).json(orders);
         })
         .catch(function(error) {
           res.status(500).json(error);

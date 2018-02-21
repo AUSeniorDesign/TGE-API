@@ -29,9 +29,10 @@ app.set('models', require('./models'));
 const port = process.env.PORT || localConfig.port;
 
 // Make sure models / db is configured and start up express app\
-app.get('models').sequelize.sync({ force: process.argv[2] == 'reset' }).then(function () {
+var resetFlag = process.argv.length == 3 && process.argv[2] == 'reset'
+app.get('models').sequelize.sync({ force: resetFlag }).then(function () {
 
-  if (process.argv[2] == 'reset') {
+  if (resetFlag) {
     var dbInit = require('./init/db_init');
     dbInit();
   }

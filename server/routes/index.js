@@ -5,4 +5,5 @@ module.exports = function(app, passport) {
     require('./health')(app);
     require('./items')(app);
     require('./users')(app, passport);
+    require('./orders')(app, passport);
 };

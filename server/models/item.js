@@ -1,7 +1,7 @@
+
 module.exports = (sequelize, DataTypes) => {
     var Item = sequelize.define('Item', {
       name: DataTypes.STRING,
-      // Decimal for quantity field on the OFF chance something is sold in a weight unit
       quantity: DataTypes.DECIMAL(10, 2),
       price: DataTypes.DECIMAL(10, 2),
       sku: DataTypes.STRING,
@@ -17,11 +17,15 @@ module.exports = (sequelize, DataTypes) => {
                 'Collectibles & Memorabilia', 'Movies & TV', 'Collector Supplies', 'Other']
       }
     });
-
+  
+    // Relationships for Cart and Order contents
     Item.associate = function (models) {
       models.Item.hasMany(models.CartItem);
-      models.Item.hasMany(models.Order);
+      models.Item.hasMany(models.OrderItem);
     };
 
     return Item;
 };
+
+
+

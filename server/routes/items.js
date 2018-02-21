@@ -1,10 +1,11 @@
 var express = require('express');
 const Item = require('../models').Item;
 
+// Store Items Endpoints
 module.exports = function(app) {
   var router = express.Router();
 
-      router.get('/', function (req, res, next) {
+    router.get('/', function (req, res, next) {
         Item.findAll()
             .then(function (users) {
                 res.status(200).json(users);
