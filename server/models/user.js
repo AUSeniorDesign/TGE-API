@@ -11,9 +11,9 @@ module.exports = (sequelize, DataTypes) => {
 
     User.associate = function (models) {
         // Shopping Cart
-        models.User.belongsToMany(models.Item, { through: 'ShoppingCart' });
+        models.User.hasMany(models.CartItem);
         // Order History
-        models.User.hasMany(models.Order, { as: 'OrderHistory' });
+        models.User.hasMany(models.Order);
     };
 
     return User;

@@ -2,6 +2,8 @@ const express = require("express");
 const passport = require("passport");
 const User = require("../models").User;
 const Item = require("../models").Item;
+const CartItem = require("../models").CartItem;
+const Order = require("../models").Order;
 const Facebook = require("../models").Facebook;
 const Google = require("../models").Google;
 const Local = require("../models").Local;
@@ -161,11 +163,12 @@ module.exports = function(app, passport) {
 
   // Get Shopping Cart
   router.get("/:id/cart", function(req, res, next) {
-    User.findById(req.params.id)
-      .then(function(user) {
-        user.getItems().then(function(cart) {
-            res.status(200).json(cart);
-        });
+    CartItem.findAll({
+      where: { UserId: req.params.id },
+      include: [Item]
+    })
+      .then(carts => {
+        res.status(200).json(carts);
       })
       .catch(function(error) {
         res.status(500).json(error);
@@ -174,20 +177,54 @@ module.exports = function(app, passport) {
 
   // Add Item Shopping Cart
   router.post("/:id/cart", function(req, res, next) {
-    Item.findById(req.body.itemId)
-      .then(function(item) {
-        User.findById(req.params.id)
-          .then(function(user) {
-            user.addItem(item);
-            res.status(200).json(item);
-          })
-          .catch(function(error) {
-            res.status(500).json(error);
-          });
+    CartItem.create({
+      UserId: req.params.id,
+      ItemId: req.body.itemId
+    }).then(cart => {
+      CartItem.findAll({
+        where: { UserId: cart.UserId },
+        include: [Item]
+      })
+        .then(carts => {
+          res.status(200).json(carts);
+        })
+        .catch(function(error) {
+          res.status(500).json(error);
+        });
+    });
+  });
+
+  // Get Shopping Cart
+  router.get("/:id/orders", function(req, res, next) {
+    Order.findAll({
+      where: { UserId: req.params.id },
+      include: [Item]
+    })
+      .then(carts => {
+        res.status(200).json(carts);
       })
       .catch(function(error) {
         res.status(500).json(error);
       });
+  });
+
+  // Add Item Shopping Cart
+  router.post("/:id/orders", function(req, res, next) {
+    Order.create({
+      UserId: req.params.id,
+      ItemId: req.body.itemId
+    }).then(order => {
+      Order.findAll({
+        where: { UserId: cart.UserId },
+        include: [Item]
+      })
+        .then(orders => {
+          res.status(200).json(orders);
+        })
+        .catch(function(error) {
+          res.status(500).json(error);
+        });
+    });
   });
 
   app.use("/users", router);

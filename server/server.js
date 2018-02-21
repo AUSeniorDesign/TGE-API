@@ -28,11 +28,10 @@ app.set('models', require('./models'));
 
 const port = process.env.PORT || localConfig.port;
 
-// Make sure models / db is configured and start up express app
-const clearOutDatabase = true; // Set to true if you want db to be reset when app starts
-app.get('models').sequelize.sync({ force: clearOutDatabase }).then(function () {
+// Make sure models / db is configured and start up express app\
+app.get('models').sequelize.sync({ force: process.argv[2] == 'reset' }).then(function () {
 
-  if (clearOutDatabase) {
+  if (process.argv[2] == 'reset') {
     var dbInit = require('./init/db_init');
     dbInit();
   }
