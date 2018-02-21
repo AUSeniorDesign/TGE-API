@@ -2,14 +2,14 @@ var expect = require('chai').expect;
 var http = require('http');
 
 // Below code demonstrates using various methods of testing
-describe('Testing Server', function() {
+describe('Testing Basic Server Health / Status', function() {
 
   before(function(done){
     require(process.cwd() + '/server/server');
     setTimeout(done, 5000); // Waiting 5 seconds for server to start
     this.timeout(10000);
   });
-    it('Public endpoint returns "Hello!"', function(done){
+    it('Public endpoint returns js message', function(done){
       var responseString = '';
 
       var options = {
@@ -32,7 +32,7 @@ describe('Testing Server', function() {
       http.request(options, callback).end();
     });
 
-    it('Health endpoint shows status up', function(done){
+    it ('Health endpoint shows status up', function(done){
       var responseString = '';
 
       var options = {
@@ -54,4 +54,7 @@ describe('Testing Server', function() {
 
       http.request(options, callback).end();
     });
+
+    
+
 });

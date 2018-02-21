@@ -18,10 +18,11 @@ sequelizeNoUpdateAttributes(sequelize);
 var db = {};
 
 /**
- * Imports all models in 'models' directory, and creates relationships.
- * Establishes system-wide access to the 'models' module
+ * This script imports all models in 'models' directory, and creates relationships.
+ * Establishes system-wide access to the 'models' module.
+ * 
+ * This is invoked via /server/server.js when sequelize is initialized.
  */
-
 fs
   .readdirSync(__dirname)
   .filter(function (file) {

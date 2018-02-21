@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-    var NewArrival = sequelize.define('NewArrival', {
+    var NewArrivalPost = sequelize.define('NewArrivalPost', {
       // Description of recently arrived items
       description: DataTypes.STRING,
       // Images of recently arrived items 
@@ -8,5 +8,5 @@ module.exports = (sequelize, DataTypes) => {
       store: DataTypes.STRING,
     });
   
-    return NewArrival;
+    return NewArrivalPost;
 };

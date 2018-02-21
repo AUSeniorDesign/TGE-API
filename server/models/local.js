@@ -32,5 +32,10 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    Local.associate = function (models) {
+        // SSOs
+        models.Local.belongsTo(models.User);
+    };
+
     return Local;
 };

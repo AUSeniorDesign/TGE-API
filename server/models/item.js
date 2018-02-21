@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
                 'Collectibles & Memorabilia', 'Movies & TV', 'Collector Supplies', 'Other']
       }
     });
-  
+
+    Item.associate = function (models) {
+      models.Item.belongsToMany(models.User, { through: 'ShoppingCart' });
+    };
+
     return Item;
 };
