@@ -29,12 +29,11 @@ app.set('models', require('./models'));
 const port = process.env.PORT || localConfig.port;
 
 // Make sure models / db is configured and start up express app\
-app.get('models').sequelize.sync({ force: process.argv[2] == 'reset' }).then(function () {
+app.get('models').sequelize.sync({ force: true }).then(function () {
 
-  if (process.argv[2] == 'reset') {
     var dbInit = require('./init/db_init');
     dbInit();
-  }
+  
 
   app.listen(port, function () {
     logger.info(`TGEAPIReact listening on http://localhost:${port}/appmetrics-dash`);
