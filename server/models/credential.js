@@ -2,16 +2,16 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
 module.exports = (sequelize, DataTypes) => {
-    var Local = sequelize.define('Local', {
+    var Credential = sequelize.define('Credential', {
         email: DataTypes.STRING,
         password: DataTypes.STRING
     });
 
-    Local.hashPassword = function (password) {
+    Credential.hashPassword = function (password) {
         bcrypt.hash(myPlaintextPassword, saltRounds).then(function (hash) {
-            Local.update({ password: hash }, {
+            Credential.update({ password: hash }, {
                 where: {
-                    id: this.id
+                    id: self.id
                 }
             })
                 .then(function (updatedRecords) {
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    Local.verifyPassword = function (password) {
+    Credential.verifyPassword = function (password) {
         bcrypt.compare(myPlaintextPassword, self.password).then(function (res) {
             if (res) {
                 return next();
@@ -32,10 +32,10 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
-    Local.associate = function (models) {
+    Credential.associate = function (models) {
         // SSOs
-        models.Local.belongsTo(models.User);
+        models.Credential.belongsTo(models.User);
     };
 
-    return Local;
+    return Credential;
 };

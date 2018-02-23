@@ -12,8 +12,12 @@ const bodyParser = require('body-parser')
 const serviceManager = require('./services/service-manager');
 
 const app = express();
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(require('morgan')('combined'));
+app.use(require('cookie-parser')());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+
 
 // Passport for Google and Facebook
 app.use(passport.initialize())

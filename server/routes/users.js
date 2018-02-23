@@ -1,13 +1,11 @@
 const express = require("express");
-const passport = require("passport");
 const User = require("../models").User;
 const Item = require("../models").Item;
 const CartItem = require("../models").CartItem;
 const Order = require("../models").Order;
 const Facebook = require("../models").Facebook;
 const Google = require("../models").Google;
-const Local = require("../models").Local;
-
+const Credential = require("../models").Credential;
 
 ////////////////////////////////////////////////
 // Helper Functions
@@ -44,29 +42,28 @@ module.exports = function(app, passport) {
     passport.authenticate("local");
   });
 
-  router.post("/create", function(req, res, next) {
-    Local.findOne({ where: { username: req.body.local.username } }).then(
-      existingUser => {
-        if (existingUser) {
-          res.status(400).send("User with username already exists");
-          return;
-        }
-
-        var password = req.body.password;
-        delete req.body.password;
-
-        User.create({
-          Credentials: req.body.local
-        })
-          .then(function(newUser) {
-            hashPassword(newUser, password);
-            res.status(200).json(newUser);
-          })
-          .catch(function(error) {
-            res.status(500).json(error);
-          });
+  router.post("/signup", function(req, res, next) {
+    Credential.findOrCreate({
+      where: { email: req.body.email },
+      defaults: req.body
+    }).spread((credential, created) => {
+      if (!created) {
+        res.status(400).send("User with this email already exists");
+        return;
       }
-    );
+
+      User.create()
+        .then(user => {
+          user.setCredential(credential).then(function() {
+            res.status(200).json(user);
+          });
+        })
+        .catch(function(error) {
+          res.status(500).json(error);
+        });
+    }).catch(function(error) {
+      res.status(500).json(error);
+    });
   });
 
   ///////////////////////////
