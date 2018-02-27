@@ -42,7 +42,6 @@ app.get('models').sequelize.sync({ force: resetFlag }).then(function () {
   }
 
   app.listen(port, function () {
-    logger.info(`TGEAPIReact listening on http://localhost:${port}/appmetrics-dash`);
     logger.info(`TGEAPIReact listening on http://localhost:${port}`);
   });
 });

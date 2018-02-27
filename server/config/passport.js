@@ -1,16 +1,17 @@
 const User = require("../models/user");
-const Credential = require("../models/credential");
+const Credential = require("../models").Credential;
 const LocalStrategy = require("passport-local").Strategy;
 const FacebookTokenStrategy = require("passport-facebook-token").Strategy;
 const GoogleTokenStrategy = require("passport-google-token").Strategy;
 
 module.exports = function(passport) {
   passport.use(
-    new LocalStrategy(function(email, password, done) {
-      Credential.findOne({ where: { email: email } }).then(credential => {
+    new LocalStrategy(function(username, password, done) {
+      Credential.findOne({ where: { email: username } }).then(credential => {
         if (!credential) {
           return done(null, false);
         }
+        
         if (!credential.verifyPassword(password)) {
           return done(null, false);
         }

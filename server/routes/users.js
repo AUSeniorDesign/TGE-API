@@ -37,9 +37,18 @@ module.exports = function(app, passport) {
       });
   });
 
-  // Login
-  router.post("/login", function(req, res, next) {
-    passport.authenticate("local");
+  /**
+   *  Username / Password Login
+   * 
+   *  Takes request body with credentials. 
+   *  Body MUST be in the following format:
+   *  req.body = {
+   *    username: 'myusername',
+   *    password: 'mypassword'
+   *  }
+   */
+  router.post("/login", passport.authenticate('local'), function(req, res, next) {
+    res.status(200).send(req.user);
   });
 
   router.post("/signup", function(req, res, next) {
@@ -191,6 +200,25 @@ module.exports = function(app, passport) {
         });
     });
   });
+
+    // Delete Item Shopping Cart
+    router.post("/:id/cart", function(req, res, next) {
+      CartItem.create({
+        UserId: req.params.id,
+        ItemId: req.body.itemId
+      }).then(cart => {
+        CartItem.findAll({
+          where: { UserId: cart.UserId },
+          include: [Item]
+        })
+          .then(carts => {
+            res.status(200).json(carts);
+          })
+          .catch(function(error) {
+            res.status(500).json(error);
+          });
+      });
+    });
 
   app.use("/users", router);
 };

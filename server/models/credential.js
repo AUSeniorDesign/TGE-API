@@ -7,35 +7,26 @@ module.exports = (sequelize, DataTypes) => {
         password: DataTypes.STRING
     });
 
-    Credential.hashPassword = function (password) {
-        bcrypt.hash(myPlaintextPassword, saltRounds).then(function (hash) {
-            Credential.update({ password: hash }, {
-                where: {
-                    id: self.id
-                }
-            })
-                .then(function (updatedRecords) {
-                    console.log(updatedRecords)
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
-        });
+    // Instance Methods
+
+    Credential.prototype.verifyPassword = function (plaintext) {
+        console.log(this.password);
+        return bcrypt.compareSync(plaintext, this.password);
     }
 
-    Credential.verifyPassword = function (password) {
-        bcrypt.compare(myPlaintextPassword, self.password).then(function (res) {
-            if (res) {
-                return next();
-            }
-            res.status(401).end('Incorrect password');
-        });
-    }
+    // Static Methods
 
     Credential.associate = function (models) {
         // SSOs
         models.Credential.belongsTo(models.User);
     };
+
+    // This hook applies hash to plain text password before inserting into db.
+    Credential.beforeUpdate((credential, options) => {
+        return bcrypt.hash(credential.password, saltRounds).then( hash => {
+            credential.password = hash;
+        });
+    });
 
     return Credential;
 };
