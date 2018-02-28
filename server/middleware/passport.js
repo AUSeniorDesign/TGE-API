@@ -126,8 +126,8 @@ module.exports = function(passport) {
   passport.use(
     new FacebookTokenStrategy(
       {
-        clientID: '325985624578151',
-        clientSecret: '3a6b7888a2ee80d44050360162878b30',
+        clientID: process.env.FB_APP_ID,
+        clientSecret: process.env.FB_APP_SECRET,
         profileFields: ['id', 'displayName', 'name', 'email'],
       },
       function(accessToken, refreshToken, fbProfile, done) {
