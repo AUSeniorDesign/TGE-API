@@ -1,20 +1,14 @@
+/**
+ * @author Haven Barnes <hab0020@auburn.edu>
+ */
+
 const express = require("express");
 const User = require("../models").User;
 const Item = require("../models").Item;
 const CartItem = require("../models").CartItem;
 const Order = require("../models").Order;
 const Facebook = require("../models").Facebook;
-const Google = require("../models").Google;
 const Credential = require("../models").Credential;
-
-////////////////////////////////////////////////
-// Helper Functions
-////////////////////////////////////////////////
-
-function isLoggedIn(req, res, next) {
-  if (req.isAuthenticated()) return next();
-  res.status(401).end("Not logged in");
-}
 
 ////////////////////////////////////////////////
 // Routes
@@ -23,14 +17,58 @@ function isLoggedIn(req, res, next) {
 module.exports = function(app, passport) {
   var router = express.Router();
 
-  ///////////////////////////
-  // Username / Password
-  ///////////////////////////
+  /**
+   *  Username / Password Login
+   *
+   *  Takes request body with credentials.
+   * 
+   *  Please note that 'username' is expected to be an email, however
+   *  Passport's LocalStrategy specifically expects a 'username' property
+   * 
+   *  Body MUST be in the following format:
+   *  req.body = {
+   *    username: 'myusername',
+   *    password: 'mypassword'
+   *  }
+   */
+  router.post("/login", passport.authenticate("local"), function(req, res, next) {
+    res.status(200).send(req.user);
+  });
 
-  router.post("/", function(req, res, next) {
-    User.create()
-      .then(function(newUser) {
-        res.status(200).json(newUser);
+  /**
+   *  Username / Password Signup
+   *
+   *  Takes request body with credentials.
+   * 
+   *  Please note that 'username' is expected to be an email, however
+   *  Passport's LocalStrategy specifically expects a 'username' property
+   * 
+   *  Body MUST be in the following format:
+   *  req.body = {
+   *    username: 'email@email.com',
+   *    password: 'mypassword'
+   *  }
+   */
+  router.post("/signup", function(req, res, next) {
+    Credential.findOrCreate({
+      where: { email: req.body.username },
+      defaults: req.body
+    })
+      .spread((credential, created) => {
+        if (!created) {
+          res.status(400).send("User with this email already exists");
+          return;
+        }
+
+        User.create()
+          .then(user => {
+            user.setCredential(credential).then(function() {
+              res.status(200).json(user);
+            });
+          })
+          .catch(function(error) {
+            res.status(500).json(error);
+          });
       })
       .catch(function(error) {
         res.status(500).json(error);
@@ -38,97 +76,35 @@ module.exports = function(app, passport) {
   });
 
   /**
-   *  Username / Password Login
-   * 
-   *  Takes request body with credentials. 
+   *  Facebook Login
+   *
+   *  Takes request body with facebook token.
    *  Body MUST be in the following format:
    *  req.body = {
-   *    username: 'myusername',
-   *    password: 'mypassword'
+   *      access_token: 'abc1234567890'
    *  }
    */
-  router.post("/login", passport.authenticate('local'), function(req, res, next) {
-    res.status(200).send(req.user);
+  router.post("/login/facebook", function(req, res, next) {
+    passport.authenticate("facebook-token");
   });
 
-  router.post("/signup", function(req, res, next) {
-    Credential.findOrCreate({
-      where: { email: req.body.email },
-      defaults: req.body
-    }).spread((credential, created) => {
-      if (!created) {
-        res.status(400).send("User with this email already exists");
-        return;
-      }
+  ////////////////////////////////////////////////
+  // CRUD Methods
+  ////////////////////////////////////////////////
 
-      User.create()
-        .then(user => {
-          user.setCredential(credential).then(function() {
-            res.status(200).json(user);
-          });
-        })
-        .catch(function(error) {
-          res.status(500).json(error);
-        });
+  // Get All Users
+  // ADMIN ONLY
+  router.get("/", passport.isAdmin, function(req, res, next) {
+    User.findAll({ include: [Credential, Facebook]}).then(users => {
+      res.status(200).json(users);
     }).catch(function(error) {
       res.status(500).json(error);
     });
   });
 
-  ///////////////////////////
-  // Facebook
-  ///////////////////////////
-
-  router.post("/facebook", function(req, res, next) {
-    passport.authenticate("facebook-token");
-  });
-
-  // Create User w/ Facebook
-  router.post("/create/facebook", function(req, res, next) {
-    // TODO: Authenticate Facebook token here (combine logic from endpoint above)
-    Facebook.findOne({ where: { facebookId: req.body.facebook.facebookId } })
-      .then(function(facebook) {
-        // Already Exists
-        if (facebook) {
-          res
-            .status(400)
-            .end(
-              "This Facebook account is already used with " +
-                " a different TGE account."
-            );
-          return;
-        }
-
-        Facebook.create(req.body.facebook).then(facebook => {
-          User.create()
-            .then(user => {
-              user.setFacebook(facebook).then(function() {
-                User.findOne({
-                  where: { id: user.id },
-                  include: [Facebook]
-                }).then(user => {
-                  res.status(200).json(user);
-                });
-              });
-            })
-            .catch(function(error) {
-              console.log(error);
-              res.status(500).json(error);
-            });
-        });
-      })
-      .catch(function(error) {
-        console.log(error);
-        res.status(500).json(error);
-      });
-  });
-
-  ///////////////////////////
-  // CRUD Methods
-  ///////////////////////////
-
   // Get User by ID
-  router.get("/:id", isLoggedIn, function(req, res, next) {
+  // EMPLOYEES/ADMINS ONLY
+  router.get("/:id", passport.isEmployee, function(req, res, next) {
     User.findById(req.params.id)
       .then(function(user) {
         res.status(200).json(user);
@@ -139,7 +115,7 @@ module.exports = function(app, passport) {
   });
 
   // Update User
-  router.put("/:id", isLoggedIn, function(req, res, next) {
+  router.put("/:id", passport.isParamUser, function(req, res, next) {
     User.update(req.body, {
       where: {
         id: req.params.id
@@ -153,8 +129,25 @@ module.exports = function(app, passport) {
       });
   });
 
+  // Update user God mode.
+  // DEVELOPMENT ONLY
+  // TODO: Disable endpoint before production release.
+  router.put("/dev/:id", passport.isDev, function(req, res, next) {
+    User.update(req.body, {
+      where: {
+        id: req.params.user.id
+      }
+    })
+      .then(function(updatedRecords) {
+        res.status(200).json(updatedRecords);
+      })
+      .catch(function(error) {
+        res.status(500).json(error);
+      });
+  });
+
   // Delete User
-  router.delete("/:id", isLoggedIn, function(req, res, next) {
+  router.delete("/:id", passport.isLoggedIn, function(req, res, next) {
     User.destroy({
       where: {
         id: req.params.id
@@ -169,7 +162,7 @@ module.exports = function(app, passport) {
   });
 
   // Get Shopping Cart
-  router.get("/:id/cart", function(req, res, next) {
+  router.get("/cart", function(req, res, next) {
     CartItem.findAll({
       where: { UserId: req.params.id },
       include: [Item]
@@ -183,7 +176,7 @@ module.exports = function(app, passport) {
   });
 
   // Add Item Shopping Cart
-  router.post("/:id/cart", function(req, res, next) {
+  router.post("/cart", function(req, res, next) {
     CartItem.create({
       UserId: req.params.id,
       ItemId: req.body.itemId
@@ -201,24 +194,27 @@ module.exports = function(app, passport) {
     });
   });
 
-    // Delete Item Shopping Cart
-    router.post("/:id/cart", function(req, res, next) {
-      CartItem.create({
-        UserId: req.params.id,
-        ItemId: req.body.itemId
-      }).then(cart => {
-        CartItem.findAll({
-          where: { UserId: cart.UserId },
-          include: [Item]
+  /**
+   * Delete Item Shopping Cart
+   */
+  router.delete("/:id/cart", function(req, res, next) {
+    CartItem.create({
+      UserId: req.params.id,
+      ItemId: req.body.itemId
+    }).then(cart => {
+      CartItem.findAll({
+        where: { UserId: cart.UserId },
+        include: [Item]
+      })
+        .then(carts => {
+          res.status(200).json(carts);
         })
-          .then(carts => {
-            res.status(200).json(carts);
-          })
-          .catch(function(error) {
-            res.status(500).json(error);
-          });
-      });
+        .catch(function(error) {
+          res.status(500).json(error);
+        });
     });
+  });
 
   app.use("/users", router);
+
 };

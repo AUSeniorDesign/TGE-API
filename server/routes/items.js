@@ -1,4 +1,8 @@
-var express = require('express');
+/**
+ * @author Haven Barnes <hab0020@auburn.edu>
+ */
+
+const express = require('express');
 const Item = require('../models').Item;
 
 // Store Items Endpoints

@@ -1,3 +1,7 @@
+/**
+ * @author Haven Barnes <hab0020@auburn.edu>
+ */
+
 var fs = require("fs");
 var path = require("path");
 

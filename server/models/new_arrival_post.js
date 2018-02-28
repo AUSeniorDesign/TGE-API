@@ -1,3 +1,7 @@
+/**
+ * @author Haven Barnes <hab0020@auburn.edu>
+ */
+
 module.exports = (sequelize, DataTypes) => {
     var NewArrivalPost = sequelize.define('NewArrivalPost', {
       // Description of recently arrived items

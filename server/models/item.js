@@ -1,3 +1,6 @@
+/**
+ * @author Haven Barnes <hab0020@auburn.edu>
+ */
 
 module.exports = (sequelize, DataTypes) => {
     var Item = sequelize.define('Item', {

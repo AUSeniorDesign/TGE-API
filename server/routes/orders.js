@@ -1,3 +1,7 @@
+/**
+ * @author Haven Barnes <hab0020@auburn.edu>
+ */
+
 const express = require('express');
 const passport = require('passport');
 const Order = require('../models').Order;

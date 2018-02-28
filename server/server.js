@@ -24,7 +24,7 @@ app.use(passport.initialize())
 app.use(passport.session())
 
 require('./services/index')(app);
-require('./config/passport')(passport);
+require('./middleware/passport')(passport);
 require('./routes/index')(app, passport);
 
 // Configure app models (see models/index.js)

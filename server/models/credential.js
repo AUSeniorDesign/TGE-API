@@ -1,3 +1,7 @@
+/**
+ * @author Haven Barnes <hab0020@auburn.edu>
+ */
+
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 
@@ -7,17 +11,20 @@ module.exports = (sequelize, DataTypes) => {
         password: DataTypes.STRING
     });
 
+    ////////////////////////////
     // Instance Methods
-
+    ////////////////////////////
     Credential.prototype.verifyPassword = function (plaintext) {
-        console.log(this.password);
-        return bcrypt.compareSync(plaintext, this.password);
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(plaintext, this.password).then(function(res) {
+                resolve(res);
+            });
+        });
     }
 
     // Static Methods
 
     Credential.associate = function (models) {
-        // SSOs
         models.Credential.belongsTo(models.User);
     };
 
