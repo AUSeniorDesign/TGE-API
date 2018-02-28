@@ -4,6 +4,11 @@ const LocalStrategy = require("passport-local").Strategy;
 const FacebookTokenStrategy = require("passport-facebook-token");
 
 module.exports = function(passport) {
+
+  /////////////////////////////////////
+  // Security Middleware
+  /////////////////////////////////////
+
   /**
    * isLoggedIn is a helper middleware that gets run through to guard against
    * unauthorized / unauthenticated requests.
@@ -32,7 +37,7 @@ module.exports = function(passport) {
 	 * Admin Users
    */
   passport.isAdmin = function(req, res, next) {
-    if (req.isAuthenticated() && (req.user.type == 'admin')) {
+    if (req.isAuthenticated() && req.user.type == 'admin') {
 			return next();
 		}
     res.status(403).end("Only available to Admins");
@@ -41,10 +46,14 @@ module.exports = function(passport) {
   /**
    * isParamUser is a helper middleware that gets run through to guard against
    * unauthorized / unauthenticated requests that should only be available to 
-	 * to the user themselves 
+	 * to the user themselves, OR they are an admin, in which case they can make
+   * whichever changes they would like.
+   * 
+   * The main use case for admins' to change a user's data would be to elevate user
+   * status in the system to 'employee' or 'admin'.
    */
   passport.isParamUser = function(req, res, next) {
-    if (req.isAuthenticated() && (req.param.id == req.user.id)) {
+    if (req.isAuthenticated() && (req.user.type == 'admin' || req.param.id == req.user.id)) {
 			return next();
 		}
     res.status(403).end("You cannot update user data that does not belong "
@@ -55,17 +64,24 @@ module.exports = function(passport) {
    * isDev is a helper middleware that gets run through to guard against
    * unauthorized / unauthenticated requests that should only be available to 
 	 * Devs. This does not actually require being logged in and will be taken out
-   * in production. It's main use is for designating the inital Admins in
+   * in production. 
+   * 
+   * The main use is for designating the inital Admins in
    * The Great Escape system.
    * 
    * TODO: Take this out before production release.
    */
   passport.isDev = function(req, res, next) {
-    if (req.body.dev_secret == 'secret!') {
+    if (req.body.secret == 'secret!') {
 			return next();
 		}
     res.status(403).end("Only available to Developers!");
   };
+
+
+  /////////////////////////////////////
+  // Login Strategies
+  /////////////////////////////////////
 
   /**
    * Sets up Passport's Local Strategy, which uses username and password

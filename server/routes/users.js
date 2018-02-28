@@ -34,7 +34,7 @@ module.exports = function(app, passport) {
   router.post("/login", passport.authenticate("local"), function(req, res, next) {
     res.status(200).send(req.user);
   });
-
+  
   /**
    *  Username / Password Signup
    *
@@ -48,37 +48,56 @@ module.exports = function(app, passport) {
    *    username: 'email@email.com',
    *    password: 'mypassword'
    *  }
+   * 
+   *  The steps of the signup process are currently:
+   *      1. Search if email already exists and create Credential for it if not
+   *      2. Create a new User and associatie user and Credential
+   *      3. Login User to session via Passport
+   *      4. Return current User object in response.
+   * 
+   *  TODO: Migrate the findOrCreate Logic to the LocalStrategy's definition in 
+   *        passport.js to make this a bit simpler.
    */
-  router.post("/signup", function(req, res, next) {
-    Credential.findOrCreate({
-      where: { email: req.body.username },
-      defaults: req.body
-    })
-      .spread((credential, created) => {
-        if (!created) {
-          res.status(400).send("User with this email already exists");
-          return;
-        }
+  router.post("/signup", 
+    function(req, res, next) {
+      Credential.findOrCreate({
+        where: { email: req.body.username },
+        defaults: req.body
+      })
+        .spread((credential, created) => {
+          if (!created) {
+            res.status(400).send("User with this email already exists");
+            return;
+          }
 
-        User.create()
-          .then(user => {
-            user.setCredential(credential).then(function() {
-              res.status(200).json(user);
+          User.create()
+            .then(user => {
+              user.setCredential(credential).then(function() {
+                next();
+              });
+            })
+            .catch(function(error) {
+              res.status(500).json(error);
             });
           })
           .catch(function(error) {
             res.status(500).json(error);
           });
-      })
-      .catch(function(error) {
-        res.status(500).json(error);
-      });
-  });
+    }, 
+    passport.authenticate("local"), 
+    function(req, res, next) {
+      if (req.user) {
+        res.status(200).json(req.user);
+      } else {
+        res.status(500).send("Signup failed.");
+      }
+    });
 
   /**
    *  Facebook Login
    *
-   *  Takes request body with facebook token.
+   *  Takes request body with facebook access token.
+   * 
    *  Body MUST be in the following format:
    *  req.body = {
    *      access_token: 'abc1234567890'
@@ -92,8 +111,15 @@ module.exports = function(app, passport) {
   // CRUD Methods
   ////////////////////////////////////////////////
 
-  // Get All Users
-  // ADMIN ONLY
+  /**
+   * Get All Users
+   * 
+   * For admins only.
+   * 
+   * The main use of this endpoint is for an admin to 
+   * search for other users in the system and elevate / revoke 
+   * their user staus to 'admin', 'employee', or down to 'customer'.
+   */
   router.get("/", passport.isAdmin, function(req, res, next) {
     User.findAll({ include: [Credential, Facebook]}).then(users => {
       res.status(200).json(users);
@@ -102,8 +128,18 @@ module.exports = function(app, passport) {
     });
   });
 
+  // Get Own User Object
+  router.get("/me", passport.isLoggedIn, function(req, res, next) {
+    User.find({ where: { id: req.user.id }, include: [Credential, Facebook]})
+      .then(function(user) {
+        res.status(200).json(user);
+      })
+      .catch(function(error) {
+        res.status(500).json(error);
+      });
+  });
+
   // Get User by ID
-  // EMPLOYEES/ADMINS ONLY
   router.get("/:id", passport.isEmployee, function(req, res, next) {
     User.findById(req.params.id)
       .then(function(user) {
@@ -116,7 +152,7 @@ module.exports = function(app, passport) {
 
   // Update User
   router.put("/:id", passport.isParamUser, function(req, res, next) {
-    User.update(req.body, {
+    User.update(req.body.user, {
       where: {
         id: req.params.id
       }
@@ -129,13 +165,13 @@ module.exports = function(app, passport) {
       });
   });
 
-  // Update user God mode.
+  // Update user in God mode.
   // DEVELOPMENT ONLY
   // TODO: Disable endpoint before production release.
   router.put("/dev/:id", passport.isDev, function(req, res, next) {
-    User.update(req.body, {
+    User.update(req.body.user, {
       where: {
-        id: req.params.user.id
+        id: req.params.id
       }
     })
       .then(function(updatedRecords) {
@@ -147,7 +183,7 @@ module.exports = function(app, passport) {
   });
 
   // Delete User
-  router.delete("/:id", passport.isLoggedIn, function(req, res, next) {
+  router.delete("/:id", passport.isParamUser, function(req, res, next) {
     User.destroy({
       where: {
         id: req.params.id
@@ -162,7 +198,7 @@ module.exports = function(app, passport) {
   });
 
   // Get Shopping Cart
-  router.get("/cart", function(req, res, next) {
+  router.get("/cart", passport.isLoggedIn, function(req, res, next) {
     CartItem.findAll({
       where: { UserId: req.params.id },
       include: [Item]
@@ -176,7 +212,7 @@ module.exports = function(app, passport) {
   });
 
   // Add Item Shopping Cart
-  router.post("/cart", function(req, res, next) {
+  router.post("/cart", passport.isLoggedIn, function(req, res, next) {
     CartItem.create({
       UserId: req.params.id,
       ItemId: req.body.itemId
@@ -197,7 +233,7 @@ module.exports = function(app, passport) {
   /**
    * Delete Item Shopping Cart
    */
-  router.delete("/:id/cart", function(req, res, next) {
+  router.delete("/cart", passport.isLoggedIn, function(req, res, next) {
     CartItem.create({
       UserId: req.params.id,
       ItemId: req.body.itemId
