@@ -159,7 +159,7 @@ module.exports = function(passport) {
                   return done(error, false);
                 });
             } else {
-              // Find existing associated User and return
+              // Find existing associated User and return it instead
               User.findOne({
                 where: { id: facebook.UserId },
                 include: [Facebook]
