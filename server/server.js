@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(require('express-session')({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
 
 
-// Passport for Google and Facebook
+// Passport for Username/Password and Facebook
 app.use(passport.initialize())
 app.use(passport.session())
 

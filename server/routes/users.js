@@ -103,8 +103,19 @@ module.exports = function(app, passport) {
    *      access_token: 'abc1234567890'
    *  }
    */
-  router.post("/login/facebook", function(req, res, next) {
-    passport.authenticate("facebook-token");
+
+  router.get('/auth/facebook', passport.authenticate('facebook-token'), function(req, res, next) {
+    res.status(200).send(req.user);
+  });
+
+  router.post("/login", passport.authenticate("local"), function(req, res, next) {
+    res.status(200).send(req.user);
+  });
+  
+
+  router.get('/logout', function(req, res) {
+    req.logout();
+    res.status(200).send("Logged out.")
   });
 
   ////////////////////////////////////////////////

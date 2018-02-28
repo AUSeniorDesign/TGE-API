@@ -1,4 +1,5 @@
 const User = require("../models").User;
+const Facebook = require("../models").Facebook;
 const Credential = require("../models").Credential;
 const LocalStrategy = require("passport-local").Strategy;
 const FacebookTokenStrategy = require("passport-facebook-token");
@@ -88,8 +89,7 @@ module.exports = function(passport) {
    * via the Credential model to verify a user's identitiy. The Local Strategy
    * closure is called via the /users/login route as middleware
    */
-  passport.use(
-    new LocalStrategy(function(username, password, done) {
+  passport.use(new LocalStrategy(function(username, password, done) {
       Credential.findOne({ where: { email: username } }).then(credential => {
         if (!credential) {
           return done(null, false);
@@ -126,8 +126,9 @@ module.exports = function(passport) {
   passport.use(
     new FacebookTokenStrategy(
       {
-        clientID: process.env.FB_APP_ID,
-        clientSecret: process.env.FB_APP_SECRET
+        clientID: '325985624578151',
+        clientSecret: '3a6b7888a2ee80d44050360162878b30',
+        profileFields: ['id', 'displayName', 'name', 'email'],
       },
       function(accessToken, refreshToken, fbProfile, done) {
         Facebook.findOrCreate({
@@ -137,7 +138,7 @@ module.exports = function(passport) {
             token: accessToken,
             refreshToken: refreshToken,
             email: fbProfile.emails[0].value,
-            name: fbProfile.name.givenName + " " + fbProfile.name.familyName
+            name: fbProfile.displayName
           }
         })
           .spread((facebook, created) => {
@@ -166,9 +167,8 @@ module.exports = function(passport) {
                 return done(null, user);
               });
             }
-          })
-          .catch(function(error) {
-            return done(null, false);
+          }).catch(function(error) {
+            return done(error, false);
           });
       }
     )
