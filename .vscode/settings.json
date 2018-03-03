@@ -1,17 +1,16 @@
 {
-    "editor.formatOnSave": true,
-    "eslint.enable": false,
-    "todohighlight.exclude": [
-        "**/node_modules/**",
-        "**/node_modules_linux/**",
-        "**/bower_components/**",
-        "**/dist/**",
-        "**/build/**",
-        "**/.vscode/**",
-        "**/.github/**",
-        "**/_output/**",
-        "**/*.min.*",
-        "**/*.map",
-        "**/.next/**"
-    ]
+  "eslint.enable": false,
+  "todohighlight.exclude": [
+    "**/node_modules/**",
+    "**/node_modules_linux/**",
+    "**/bower_components/**",
+    "**/dist/**",
+    "**/build/**",
+    "**/.vscode/**",
+    "**/.github/**",
+    "**/_output/**",
+    "**/*.min.*",
+    "**/*.map",
+    "**/.next/**"
+  ]
 }

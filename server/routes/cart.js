@@ -10,10 +10,6 @@ const Order = require("../models").Order;
 const Facebook = require("../models").Facebook;
 const Credential = require("../models").Credential;
 
-////////////////////////////////////////////////
-// Routes
-////////////////////////////////////////////////
-
 module.exports = function(app, passport) {
   var router = express.Router();
 
@@ -50,9 +46,7 @@ module.exports = function(app, passport) {
     });
   });
 
-  /**
-   * Delete Item Shopping Cart
-   */
+  // Delete Item Shopping Cart
   router.delete("/", passport.isLoggedIn, function(req, res, next) {
     CartItem.create({
       UserId: req.params.id,
