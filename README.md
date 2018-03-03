@@ -50,6 +50,19 @@ Service credentials are taken from the VCAP_SERVICES environment variable if run
 
 <a name="run"></a>
 ### Run
+
+The entry point of the Node app is ```server/server.js```, and you can spin it up with any of the following commands: 
+
+```
+npm start
+
+node server/server.js
+
+npm run reset
+```
+
+```npm run reset``` currently clears out the DB and reloads the product database from the CSV file exported from inkFrog.
+
 #### Using IBM Cloud development CLI
 The IBM Cloud development plugin makes it easy to compile and run your application if you do not have all of the tools installed on your computer yet. Your application will be compiled with Docker containers. To compile and run your app, run:
 

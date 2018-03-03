@@ -102,14 +102,18 @@ module.exports = function(app, passport) {
    *  req.body = {
    *      access_token: 'abc1234567890'
    *  }
+   * 
+   *  IMPORTANT: Currently if you pass this endpoint an invalid access token, 
+   *  the passport middleware does not handle the res and the request 
+   *  ends up 404'ing 
+   *  TODO: See if we can adjust the above issue to return a 401/403 with more info.
    */
-
-  router.get('/auth/facebook', passport.authenticate('facebook-token'), function(req, res, next) {
-    res.status(200).send(req.user);
+  router.post('/auth/facebook', passport.authenticate("facebook-token"), function(req, res, next) {
+    res.status(200).json(req.user);
   });
 
   router.post("/login", passport.authenticate("local"), function(req, res, next) {
-    res.status(200).send(req.user);
+    res.status(200).json(req.user);
   });
   
 
@@ -141,7 +145,7 @@ module.exports = function(app, passport) {
 
   // Get Own User Object
   router.get("/me", passport.isLoggedIn, function(req, res, next) {
-    User.find({ where: { id: req.user.id }, include: [Credential, Facebook]})
+    User.find({ where: { id: req.user.id }, include: [Credential, Facebook, CartItem]})
       .then(function(user) {
         res.status(200).json(user);
       })
@@ -206,60 +210,6 @@ module.exports = function(app, passport) {
       .catch(function(error) {
         res.status(500).json(error);
       });
-  });
-
-  // Get Shopping Cart
-  router.get("/cart", passport.isLoggedIn, function(req, res, next) {
-    CartItem.findAll({
-      where: { UserId: req.params.id },
-      include: [Item]
-    })
-      .then(carts => {
-        res.status(200).json(carts);
-      })
-      .catch(function(error) {
-        res.status(500).json(error);
-      });
-  });
-
-  // Add Item Shopping Cart
-  router.post("/cart", passport.isLoggedIn, function(req, res, next) {
-    CartItem.create({
-      UserId: req.params.id,
-      ItemId: req.body.itemId
-    }).then(cart => {
-      CartItem.findAll({
-        where: { UserId: cart.UserId },
-        include: [Item]
-      })
-        .then(carts => {
-          res.status(200).json(carts);
-        })
-        .catch(function(error) {
-          res.status(500).json(error);
-        });
-    });
-  });
-
-  /**
-   * Delete Item Shopping Cart
-   */
-  router.delete("/cart", passport.isLoggedIn, function(req, res, next) {
-    CartItem.create({
-      UserId: req.params.id,
-      ItemId: req.body.itemId
-    }).then(cart => {
-      CartItem.findAll({
-        where: { UserId: cart.UserId },
-        include: [Item]
-      })
-        .then(carts => {
-          res.status(200).json(carts);
-        })
-        .catch(function(error) {
-          res.status(500).json(error);
-        });
-    });
   });
 
   app.use("/users", router);
