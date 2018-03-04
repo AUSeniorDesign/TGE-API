@@ -26,6 +26,7 @@
     "appmetrics-prometheus": "^0.0.2",
     "bcrypt": "^1.0.3",
     "body-parser": "^1.18.2",
+    "connect-session-sequelize": "^5.2.0",
     "cookie-parser": "^1.4.3",
     "csv-reader": "^1.0.1",
     "express": "^4.15.3",
