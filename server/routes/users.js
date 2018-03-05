@@ -154,6 +154,7 @@ module.exports = function(app, passport) {
   });
 
   // Get User by ID
+  // Employees / Admins only
   router.get("/:id", passport.isEmployee, function(req, res, next) {
     User.findById(req.params.id)
       .then(function(user) {
@@ -165,7 +166,7 @@ module.exports = function(app, passport) {
   });
 
   // Update User
-  router.put("/:id", passport.isParamUser, function(req, res, next) {
+  router.put("/", passport.isLoggedIn, function(req, res, next) {
     User.update(req.body.user, {
       where: {
         id: req.params.id

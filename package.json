@@ -39,9 +39,12 @@
     "passport-facebook": "^2.1.1",
     "passport-facebook-token": "^3.3.0",
     "passport-local": "^1.0.0",
+    "request": "^2.83.0",
+    "request-promise": "^4.2.2",
     "sequelize": "^4.31.2",
     "sequelize-noupdate-attributes": "^1.0.0",
-    "sqlite3": "^3.1.13"
+    "sqlite3": "^3.1.13",
+    "xml2json": "^0.11.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

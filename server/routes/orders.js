@@ -4,6 +4,7 @@
 
 const express = require('express');
 const passport = require('passport');
+const ebay = require('../middleware/ebay.js');
 const Order = require('../models').Order;
 
 function isLoggedIn(req, res, next) {
@@ -16,7 +17,7 @@ module.exports = function (app, passport) {
     var router = express.Router();
 
     // Create Order
-    router.post('/', function (req, res) {
+    router.post('/', ebay.updateInventoryQuantity, function (req, res) {
         Order.create(req.body)
             .then(function (newOrder) {
                 res.status(200).json(newOrder);
@@ -57,21 +58,6 @@ module.exports = function (app, passport) {
         })
             .then(function (updatedRecords) {
                 res.status(200).json(updatedRecords);
-            })
-            .catch(function (error) {
-                res.status(500).json(error);
-            });
-    });
-
-    // Delete User
-    router.delete('/:id', isLoggedIn, function (req, res, next) {
-        User.destroy({
-            where: {
-                id: req.params.id
-            }
-        })
-            .then(function (deletedRecords) {
-                res.status(200).json(deletedRecords);
             })
             .catch(function (error) {
                 res.status(500).json(error);
