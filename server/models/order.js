@@ -6,11 +6,13 @@ module.exports = (sequelize, DataTypes) => {
     var Order = sequelize.define("Order", {
         status: {
             type: DataTypes.ENUM,
-            values: ["pending", "cancelled", "shipped", "delivered"]
+            values: ["pending", "cancelled", "shipped", "delivered"],
+            defaultValue: 'pending',
         }
     });
 
     Order.associate = function(models) {
+
         models.Order.hasMany(models.OrderItem);
         models.Order.belongsTo(models.User);
 

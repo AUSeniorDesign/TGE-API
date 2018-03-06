@@ -7,16 +7,17 @@ module.exports = (sequelize, DataTypes) => {
         type: {
             type: DataTypes.ENUM,
             values: ['admin', 'employee', 'customer'],
-            defaultValue: 'customer',
-            noUpdate: true
+            defaultValue: 'customer'
           }
     });
 
     User.associate = function (models) {
         // Shopping Cart
         models.User.hasMany(models.CartItem);
+
         // Order History
         models.User.hasMany(models.Order);
+        
         // Saved Address
         models.User.hasOne(models.Address, { as: 'savedAddress' });
 

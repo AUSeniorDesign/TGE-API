@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
     ////////////////////////////
     // Instance Methods
     ////////////////////////////
+    
     Credential.prototype.verifyPassword = function (plaintext) {
         return new Promise((resolve, reject) => {
             bcrypt.compare(plaintext, this.password).then(function(res) {
@@ -22,7 +23,9 @@ module.exports = (sequelize, DataTypes) => {
         });
     }
 
+    ////////////////////////////
     // Static Methods
+    ////////////////////////////
 
     Credential.associate = function (models) {
         models.Credential.belongsTo(models.User);

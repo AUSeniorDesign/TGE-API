@@ -17,10 +17,20 @@ module.exports = function (app, passport) {
     var router = express.Router();
 
     // Create Order
+    /**
+     * Order Body Format:
+     * 
+     * order: {
+     *  
+     * }
+     * 
+     */
     router.post('/', ebay.updateInventoryQuantity, function (req, res) {
         Order.create(req.body)
-            .then(function (newOrder) {
-                res.status(200).json(newOrder);
+            .then(function (order) {
+                order.setUser(req.user).then(order => {
+                    res.status(200).json(order);
+                });
             })
             .catch(function (error) {
                 res.status(500).json(error);
@@ -28,7 +38,7 @@ module.exports = function (app, passport) {
     });
 
     // Get All Orders
-    router.get('/', isLoggedIn, function (req, res, next) {
+    router.get('/', passport.isEmployee, function (req, res, next) {
         Order.findAll()
             .then(function (orders) {
                 res.status(200).json(orders);
@@ -39,7 +49,7 @@ module.exports = function (app, passport) {
     });
 
     // Get Order by ID
-    router.get('/:id', isLoggedIn, function (req, res, next) {
+    router.get('/:id', passport.isLoggedIn, function (req, res, next) {
         Order.findById(req.params.id)
             .then(function (order) {
                 res.status(200).json(order);
@@ -50,7 +60,7 @@ module.exports = function (app, passport) {
     });
 
     // Update Order
-    router.put('/:id', isLoggedIn, function (req, res, next) {
+    router.put('/:id', passport.isLoggedIn, function (req, res, next) {
         User.update(req.body, {
             where: {
                 id: req.params.id

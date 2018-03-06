@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
         state: DataTypes.STRING,
         zipcode: DataTypes.STRING,
         country: { type: DataTypes.STRING,
-                    defaultValue: 'United States'}
+                   defaultValue: 'United States'}
     });
 
     return Address;
