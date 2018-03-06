@@ -3,7 +3,6 @@
  */
 
 const request = require('request-promise');
-const xmlParser = require('xml2json');
 const Item = require('../models').Item;
 
 const SERVICE_URLS = {
@@ -34,14 +33,15 @@ const SERVICE_URLS = {
             body: {
                 requests: itemRequests
             },
+            headers: {
+                Authorization: 'Bearer ' + process.env.EBAY_APP_TOKEN
+            },
             json: true 
         };
 
         request(options)
-        .then(xmlResponse => {
+        .then(response => {
             // POST succeeded...
-            var response = xmlParser.toJson(xmlResponse);
-            
             console.log(response);
 
             next();
