@@ -1,17 +1,24 @@
+/**
+ * @author Haven Barnes <hab0020@auburn.edu>
+ */
+
 module.exports = (sequelize, DataTypes) => {
-  var Order = sequelize.define("Order", {
-    shippingAddress: DataTypes.JSON,
-    billingAddress: DataTypes.JSON,
-    status: {
-      type: DataTypes.ENUM,
-      values: ["pending", "cancelled", "shipped", "delivered"]
-    }
-  });
+    var Order = sequelize.define("Order", {
+        status: {
+            type: DataTypes.ENUM,
+            values: ["pending", "cancelled", "shipped", "delivered"],
+            defaultValue: 'pending',
+        }
+    });
 
-  Order.associate = function(models) {
-    models.Order.belongsTo(models.User);
-    models.Order.belongsTo(models.Item);
-  };
+    Order.associate = function(models) {
 
-  return Order;
+        models.Order.hasMany(models.OrderItem);
+        models.Order.belongsTo(models.User);
+
+        models.Order.hasOne(models.Address, { as: "billingAddress" });
+        models.Order.hasOne(models.Address, { as: "shippingAddress" });
+    };
+
+    return Order;
 };

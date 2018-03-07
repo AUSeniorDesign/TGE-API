@@ -1,3 +1,7 @@
+/**
+ * @author Haven Barnes <hab0020@auburn.edu>
+ */
+
 const fs = require("fs");
 const path = require("path");
 const env = process.env.NODE_ENV || "development";

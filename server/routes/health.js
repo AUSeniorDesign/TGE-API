@@ -1,8 +1,13 @@
-var express = require('express');
+/**
+ * @author Haven Barnes <hab0020@auburn.edu>
+ */
+
+const express = require('express');
 
 module.exports = function(app) {
   var router = express.Router();
 
+  // Simple Health Endpoint to check server status
   router.get('/', function(req, res, next) {
     res.json({status: 'UP'});
   });
