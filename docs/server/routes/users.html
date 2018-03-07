@@ -25,6 +25,11 @@
                 </a>
               
                 
+                <a class="source" href="feed.html">
+                  server/routes/feed.js
+                </a>
+              
+                
                 <a class="source" href="health.html">
                   server/routes/health.js
                 </a>
@@ -326,7 +331,8 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>Get User by ID</p>
+              <p>Get User by ID
+Employees / Admins only</p>
 
             </div>
             
@@ -353,7 +359,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  router.put(<span class="hljs-string">"/:id"</span>, passport.isParamUser, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+            <div class="content"><div class='highlight'><pre>  router.put(<span class="hljs-string">"/"</span>, passport.isLoggedIn, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
     User.update(req.body.user, {
       <span class="hljs-attr">where</span>: {
         <span class="hljs-attr">id</span>: req.params.id

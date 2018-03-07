@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>items.js</title>
+  <title>feed.js</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
   <link rel="stylesheet" media="all" href="../../docco.css" />
@@ -68,7 +68,7 @@
         
           <li id="title">
               <div class="annotation">
-                  <h1>items.js</h1>
+                  <h1>feed.js</h1>
               </div>
           </li>
         
@@ -88,7 +88,7 @@
  */</span>
 
 <span class="hljs-keyword">const</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">'express'</span>);
-<span class="hljs-keyword">const</span> Item = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models'</span>).Item;</pre></div></div>
+<span class="hljs-keyword">const</span> NewArrivalPost = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models'</span>).NewArrivalPost;</pre></div></div>
             
         </li>
         
@@ -99,17 +99,30 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Store Items Endpoints</p>
+              <p>New Arrival Post Endpoints</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">app</span>) </span>{
-  <span class="hljs-keyword">var</span> router = express.Router();
+  <span class="hljs-keyword">var</span> router = express.Router();</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Get all new arrival posts, sorted by date</p>
 
-    router.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res, next</span>) </span>{
-        Item.findAll()
-            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">users</span>) </span>{
-                res.status(<span class="hljs-number">200</span>).json(users);
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    router.get(<span class="hljs-string">'/'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res, next</span>) </span>{
+        NewArrivalPost.findAll({ <span class="hljs-attr">order</span>: [<span class="hljs-string">'id'</span>, <span class="hljs-string">'DESC'</span>]})
+            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">posts</span>) </span>{
+                res.status(<span class="hljs-number">200</span>).json(posts);
             })
             .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error</span>) </span>{
                 res.status(<span class="hljs-number">500</span>).json(error);

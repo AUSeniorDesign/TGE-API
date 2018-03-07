@@ -17,6 +17,7 @@
     "postinstall": "npm run build",
     "client-reload": "webpack-dev-server --history-api-fallback --progress --inline --config webpack.dev-standalone.js",
     "server-reload": "nodemon server/server.js",
+    "document": "docco server/routes/*.js",
     "restart": "npm run build && npm run start"
   },
   "dependencies": {
