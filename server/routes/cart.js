@@ -46,23 +46,20 @@ module.exports = function(app, passport) {
     });
   });
 
-  // Delete Item Shopping Cart
-  router.delete("/", passport.isLoggedIn, function(req, res, next) {
-    CartItem.create({
-      UserId: req.params.id,
-      ItemId: req.body.itemId
-    }).then(cart => {
-      CartItem.findAll({
-        where: { UserId: cart.UserId },
-        include: [Item]
+  // Delete Item Shopping Cart by CartItem ID
+  router.delete("/:id", passport.isLoggedIn, function(req, res, next) {
+    CartItem.destroy({
+      where: {
+        UserId: req.user.id,
+        id: req.params.id
+      }
+    })
+      .then(function(deletedRecords) {
+        res.status(200).send(deletedRecords + ' deleted');
       })
-        .then(carts => {
-          res.status(200).json(carts);
-        })
-        .catch(function(error) {
-          res.status(500).json(error);
-        });
-    });
+      .catch(function(error) {
+        res.status(500).json(error);
+      });
   });
 
   app.use("/cart", router);

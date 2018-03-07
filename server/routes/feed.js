@@ -3,6 +3,8 @@
  */
 
 const express = require("express");
+var multer  = require('multer');
+var upload = multer({ dest: '../../uploads/' });
 const NewArrivalPost = require("../models").NewArrivalPost;
 
 // New Arrival Post Endpoints
@@ -26,16 +28,20 @@ module.exports = function(app, passport) {
    * 
    *  Body MUST be in the following format:
    *  req.body = {
-   *      post: {
    *          description: "Here's a rare collectible that came in today",
    *          images: "http://image.com/collectible_1", "http://image.com/collectible_2"
    *          store: "Charlotte Avenue Superstore"
-   *      }
    *  }
+   * 
+   * With any and all images in a multipart form data array called 'photos'
    *
    */
-  router.post("/", passport.isEmployee, function(req, res, next) {
-    NewArrivalPost.create(req.body)
+  router.post("/", passport.isEmployee, upload.array('photos'), function(req, res, next) {
+    NewArrivalPost.create({
+      description: req.body.post.description,
+      store: req.body.store,
+      images: req.files.map(file => file.filename)
+    })
       .then(posts => {
         res.status(200).json(post);
       })
@@ -46,7 +52,7 @@ module.exports = function(app, passport) {
 
   // Update New Arrival Post
   // Admins / Employees Only
-  router.put("/:id", passport.isEmployee, function(req, res, next) {
+  router.put("/:id", passport.isEmployee, upload.array('newPhotos'), function(req, res, next) {
     NewArrivalPost.update(req.body.post, {
       where: {
         id: req.params.id
@@ -54,6 +60,12 @@ module.exports = function(app, passport) {
     })
       .then(updatedRecords => {
         res.status(200).json(updatedRecords);
+
+        // TODO: Update new image photos
+
+        // TODO: Cross reference images field after upload and delete non-present images from 
+        // uploads folder
+
       })
       .catch(error => {
         res.status(500).json(error);
@@ -62,6 +74,7 @@ module.exports = function(app, passport) {
 
   // Delete New Arrival Post
   // Admins / Employees Only
+  // TODO: Delete Image Files if not referenced somewhere else
   router.delete("/:id", passport.isEmployee, function(req, res, next) {
     NewArrivalPost.destroy({
       where: {
@@ -69,12 +82,12 @@ module.exports = function(app, passport) {
       }
     })
       .then(deletedRecords => {
-        res.status(200).json(deletedRecords);
+        res.status(200).send(deletedRecords + ' deleted');
       })
       .catch(error => {
         res.status(500).json(error);
       });
   });
 
-  app.use("/items", router);
+  app.use("/feed", router);
 };
