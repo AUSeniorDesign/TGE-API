@@ -3,17 +3,27 @@
  */
 
 const express = require("express");
-var multer  = require('multer');
-var upload = multer({ dest: '../../uploads/' });
 const NewArrivalPost = require("../models").NewArrivalPost;
+
+const multer = require("multer");
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/")
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.originalname)
+  }
+});
+
+const upload = multer({storage: storage})
 
 // New Arrival Post Endpoints
 module.exports = function(app, passport) {
   var router = express.Router();
 
   // Get all new arrival posts, sorted by date
-  router.get("/", passport.isEmployee, function(req, res, next) {
-    NewArrivalPost.findAll({ order: ["id", "DESC"] })
+  router.get("/", passport.isLoggedIn, function(req, res, next) {
+    NewArrivalPost.findAll({ order: [["id", "DESC"]] })
       .then(posts => {
         res.status(200).json(posts);
       })
@@ -29,7 +39,6 @@ module.exports = function(app, passport) {
    *  Body MUST be in the following format:
    *  req.body = {
    *          description: "Here's a rare collectible that came in today",
-   *          images: "http://image.com/collectible_1", "http://image.com/collectible_2"
    *          store: "Charlotte Avenue Superstore"
    *  }
    * 
@@ -37,12 +46,13 @@ module.exports = function(app, passport) {
    *
    */
   router.post("/", passport.isEmployee, upload.array('photos'), function(req, res, next) {
+    console.log(req.files.map(file => request.headers.host + file.path).toString());
     NewArrivalPost.create({
-      description: req.body.post.description,
+      description: req.body.description,
       store: req.body.store,
-      images: req.files.map(file => file.filename)
+      images: req.files.map(file => request.headers.host + file.path).toString()
     })
-      .then(posts => {
+      .then(post => {
         res.status(200).json(post);
       })
       .catch(error => {
