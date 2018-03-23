@@ -8,7 +8,7 @@ const NewArrivalPost = require("../models").NewArrivalPost;
 const multer = require("multer");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "uploads/")
+    cb(null, "images/")
   },
   filename: function (req, file, cb) {
     cb(null, file.originalname)
@@ -36,21 +36,23 @@ module.exports = function(app, passport) {
   /**
    * Employees Only.
    * 
-   *  Body MUST be in the following format:
-   *  req.body = {
+   *  Multipart Upload Request 
+   *  MUST be in the following format:
+   *  multipart form = [
    *          description: "Here's a rare collectible that came in today",
    *          store: "Charlotte Avenue Superstore"
-   *  }
+   *          file: file data
+   *  ]
    * 
    * With any and all images in a multipart form data array called 'photos'
    *
    */
   router.post("/", passport.isEmployee, upload.array('photos'), function(req, res, next) {
-    console.log(req.files.map(file => request.headers.host + file.path).toString());
+    console.log(req.files.map(file => req.headers.host + '/' + file.path).toString());
     NewArrivalPost.create({
       description: req.body.description,
       store: req.body.store,
-      images: req.files.map(file => request.headers.host + file.path).toString()
+      images: req.files.map(file => req.headers.host + '/' + file.path).toString()
     })
       .then(post => {
         res.status(200).json(post);

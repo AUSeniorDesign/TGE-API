@@ -28,6 +28,7 @@ module.exports = function (app, passport) {
         passport.isLoggedIn, 
         ebay.updateInventoryQuantity, 
         function (req, res) {
+
             Order.create(req.body)
                 .then(order => {
                     order.setUser(req.user).then(order => {
