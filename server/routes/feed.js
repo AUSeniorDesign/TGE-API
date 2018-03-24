@@ -8,10 +8,10 @@ const NewArrivalPost = require("../models").NewArrivalPost;
 const multer = require("multer");
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, "images/")
+    cb(null, "public/images/")
   },
   filename: function (req, file, cb) {
-    cb(null, file.originalname)
+    cb(null, Date.now().toString() + '.jpg')
   }
 });
 
@@ -48,11 +48,11 @@ module.exports = function(app, passport) {
    *
    */
   router.post("/", passport.isEmployee, upload.array('photos'), function(req, res, next) {
-    console.log(req.files.map(file => req.headers.host + '/' + file.path).toString());
     NewArrivalPost.create({
       description: req.body.description,
       store: req.body.store,
-      images: req.files.map(file => req.headers.host + '/' + file.path).toString()
+      images: req.files.map(file => req.headers.host + '/' 
+        + file.path.replace('public/', '')).toString()
     })
       .then(post => {
         res.status(200).json(post);
