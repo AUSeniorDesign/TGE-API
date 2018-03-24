@@ -130,7 +130,7 @@ module.exports = function(app, passport) {
    * their user staus to 'admin', 'employee', or down to 'customer'.
    */
   router.get("/", passport.isAdmin, function(req, res, next) {
-    User.findAll({ include: [Credential, Facebook] })
+    User.findAll({ include: [Credential, Facebook, Address] })
       .then(users => {
         res.status(200).json(users);
       })
@@ -205,7 +205,7 @@ module.exports = function(app, passport) {
       }
     })
       .then(function(deletedRecords) {
-        res.status(200).json(deletedRecords);
+        res.status(200).send(deletedRecords + ' deleted');
       })
       .catch(function(error) {
         res.status(500).json(error);

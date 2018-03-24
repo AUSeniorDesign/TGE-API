@@ -6,6 +6,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const FacebookTokenStrategy = require("passport-facebook-token");
 
 module.exports = function(passport) {
+  
   /////////////////////////////////////
   // Security Middleware
   /////////////////////////////////////
@@ -16,7 +17,7 @@ module.exports = function(passport) {
    */
   passport.isLoggedIn = function(req, res, next) {
     if (req.isAuthenticated()) return next();
-    res.status(401).end("Not logged in");
+    res.status(401).end("Not logged in.");
   };
 
   /**
@@ -25,12 +26,15 @@ module.exports = function(passport) {
    * to Employees and Admins
    */
   passport.isEmployee = function(req, res, next) {
-    if (
-      req.isAuthenticated() &&
-      (req.user.type == "admin" || req.user.type == "employee")
-    ) {
+    if (!req.isAuthenticated()) {
+        res.status(401).end("Not logged in.");
+        return;
+    } 
+    
+    if (req.user.type == "admin" || req.user.type == "employee") {
       return next();
     }
+
     res.status(403).end("Not available to customers");
   };
 
@@ -40,9 +44,15 @@ module.exports = function(passport) {
    * Admin Users
    */
   passport.isAdmin = function(req, res, next) {
-    if (req.isAuthenticated() && req.user.type == "admin") {
+    if (!req.isAuthenticated()) {
+      res.status(401).end("Not logged in.");
+      return;
+    } 
+
+    if (req.user.type == "admin") {
       return next();
     }
+
     res.status(403).end("Only available to Admins");
   };
 
@@ -56,15 +66,19 @@ module.exports = function(passport) {
    * status in the system to 'employee' or 'admin'.
    */
   passport.isParamUser = function(req, res, next) {
-    if (
-      req.isAuthenticated() &&
-      (req.user.type == "admin" || req.param.id == req.user.id)
-    ) {
+    if (!req.isAuthenticated()) {
+      res.status(401).end("Not logged in.");
+      return;
+    } 
+    
+    if (req.user.type == "admin" || 
+        req.user.type == "employee" || 
+        req.params.id == req.user.id) {
       return next();
     }
-    res
-      .status(403)
-      .end("You cannot update user data that does not belong " + "to you");
+
+    res.status(403).end("You cannot update user data that does not belong " 
+      + "to you");
   };
 
   /**
@@ -110,12 +124,13 @@ module.exports = function(passport) {
             where: { id: credential.UserId },
             include: [Credential]
           })
-            .then(user => {
-              return done(null, user);
-            })
-            .catch(function(error) {
-              return done(error, false);
-            });
+          .then(user => {
+            return done(null, user);
+          })
+          .catch(function(error) {
+            return done(error, false);
+          });
+
         });
       });
     })
@@ -132,14 +147,14 @@ module.exports = function(passport) {
    * User, associates the new Facebook object with it and returns the new User.
    */
   passport.use(
-    new FacebookTokenStrategy(
-      {
+    new FacebookTokenStrategy({
         clientID: process.env.FB_APP_ID,
         clientSecret: process.env.FB_APP_SECRET,
         profileFields: ["id", "displayName", "name", "email"]
       },
       function(accessToken, refreshToken, fbProfile, done) {
         process.nextTick(function() {
+
           Facebook.findOrCreate({
             where: { facebookId: fbProfile.id },
             defaults: {
@@ -180,6 +195,7 @@ module.exports = function(passport) {
             .catch(function(error) {
               return done(error, false);
             });
+
         });
       }
     )

@@ -6,5 +6,6 @@ module.exports = function(app, passport) {
     require('./items')(app);
     require('./users')(app, passport);
     require('./orders')(app, passport);
+    require('./feed')(app, passport);
     require('./cart')(app, passport);
 };

@@ -13,16 +13,16 @@ module.exports = (sequelize, DataTypes) => {
 
     User.associate = function (models) {
         // Shopping Cart
-        models.User.hasMany(models.CartItem);
+        models.User.hasMany(models.CartItem, { onDelete: 'cascade' });
 
         // Order History
         models.User.hasMany(models.Order);
         
         // Saved Address
-        models.User.hasOne(models.Address, { as: 'savedAddress' });
+        models.User.hasOne(models.Address, { as: 'savedAddress', onDelete: 'cascade' });
 
-        models.User.hasOne(models.Facebook);
-        models.User.hasOne(models.Credential);
+        models.User.hasOne(models.Facebook, { onDelete: 'cascade' });
+        models.User.hasOne(models.Credential, { onDelete: 'cascade' });
     };
 
     return User;
