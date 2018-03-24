@@ -28,10 +28,10 @@ module.exports = function(app, passport) {
   });
 
   // Add Item Shopping Cart
-  router.post("/", passport.isLoggedIn, function(req, res, next) {
+  router.post("/:itemId", passport.isLoggedIn, function(req, res, next) {
     CartItem.create({
       UserId: req.user.id,
-      ItemId: req.body.itemId
+      ItemId: req.params.itemId
     }).then(cart => {
       CartItem.findAll({
         where: { UserId: cart.UserId },
@@ -47,11 +47,11 @@ module.exports = function(app, passport) {
   });
 
   // Delete Item Shopping Cart by CartItem ID
-  router.delete("/:id", passport.isLoggedIn, function(req, res, next) {
+  router.delete("/:itemId", passport.isLoggedIn, function(req, res, next) {
     CartItem.destroy({
       where: {
         UserId: req.user.id,
-        id: req.params.id
+        id: req.params.itemId
       }
     })
       .then(function(deletedRecords) {

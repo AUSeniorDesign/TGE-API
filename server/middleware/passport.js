@@ -73,7 +73,7 @@ module.exports = function(passport) {
     
     if (req.user.type == "admin" || 
         req.user.type == "employee" || 
-        req.param.id == req.user.id) {
+        req.params.id == req.user.id) {
       return next();
     }
 
