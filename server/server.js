@@ -46,6 +46,7 @@ const port = process.env.PORT || localConfig.port;
 
 // Make sure models / db is configured and start up express app\
 var resetFlag = process.argv.length == 3 && process.argv[2] == "reset";
+resetFlag = true;
 app.get("models").sequelize.sync({ force: resetFlag }).then(function() {
 
     if (resetFlag) {
