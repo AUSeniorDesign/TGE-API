@@ -1,20 +1,18 @@
-import React from 'react';
-
+import React from "react";
+import Navigation from "./Navigation.jsx";
 export default class App extends React.Component {
-    render () {
-        return (
-            <section className="hero is-primary">
-                <div className="hero-body">
-                    <div className="container">
-                        <h1 className="title">
-                            The Great Escape
-                        </h1>
-                        <h2 className="subtitle">
-                            Admin Portal
-                        </h2>
-                    </div>
-                </div>
-            </section>
-        );
-    }
+  render() {
+    return (
+      <div>
+        <link
+          rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
+          crossorigin="anonymous"
+        />
+
+        <Navigation/>
+      </div>
+    );
+  }
 }

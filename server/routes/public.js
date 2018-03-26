@@ -6,6 +6,6 @@ express = require('express');
 
 module.exports = function(app) {
   router = express.Router();
-  router.use(express.static(process.cwd() + '/public'));
+  router.use(express.static(process.cwd()));
   app.use(router);
 };

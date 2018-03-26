@@ -1,16 +1,17 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackPluginConfig = new HtmlWebpackPlugin({
-  template: './client/index.html',
-  filename: 'index.html',
-  inject: 'body'
-});
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const webpack = require('webpack');
+
 
 module.exports = {
   entry: './client/index.jsx',
   output: {
     filename: 'js/bundle.[hash].js',
-    path: path.resolve(__dirname, 'public')
+    path: path.resolve(__dirname),
+  },
+  devServer: {
+    hot: true
   },
   module : {
     loaders : [
@@ -26,6 +27,13 @@ module.exports = {
     ]
   },
   plugins: [
-    HtmlWebpackPluginConfig
+    new HtmlWebpackPlugin({
+      template: './client/index.html',
+      filename: 'index.html',
+      inject: 'body'
+    }),
+    new CleanWebpackPlugin(['./js/*.js', './js/*.map'], {'allowExternal': true}),
+    new webpack.NamedModulesPlugin(),
+    new webpack.HotModuleReplacementPlugin()
   ]
 };
