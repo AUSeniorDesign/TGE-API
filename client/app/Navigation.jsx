@@ -1,38 +1,66 @@
 import React from "react";
-import { Nav, NavItem, Navbar, NavDropdown, MenuItem } from "react-bootstrap";
+import {
+  Collapse,
+  Navbar,
+  NavbarToggler,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem } from "reactstrap";
 
-export default class Navigation extends React.Component {
-  render() {
-    return (
-      <div>
-        <Navbar>
-          <Navbar.Header>
-            <Navbar.Brand>
-              <a href="#home">The Great Escape</a>
-            </Navbar.Brand>
-          </Navbar.Header>
-          <Nav>
-            <NavItem eventKey={1} href="#">
-              Orders
-            </NavItem>
-            <NavItem eventKey={2} href="#">
-              New Arrivals
-            </NavItem>
-            <NavItem eventKey={3} href="#">
-              Users
-            </NavItem>
-          </Nav>
-          <Nav pullRight>
-            <NavDropdown eventKey={4} title="Dropdown" id="basic-nav-dropdown">
-              <MenuItem eventKey={4.1}>Action</MenuItem>
-              <MenuItem eventKey={4.2}>Another action</MenuItem>
-              <MenuItem eventKey={4.3}>Something else here</MenuItem>
-              <MenuItem divider />
-              <MenuItem eventKey={4.4}>Separated link</MenuItem>
-            </NavDropdown>
-          </Nav>
-        </Navbar>
-      </div>
-    );
+  export default class Navigation extends React.Component {
+    constructor(props) {
+      super(props);
+  
+      this.toggle = this.toggle.bind(this);
+      this.state = {
+        isOpen: false
+      };
+    }
+    toggle() {
+      this.setState({
+        isOpen: !this.state.isOpen
+      });
+    }
+    render() {
+      return (
+        <div>
+          <Navbar color="primary" dark expand="md">
+            <NavbarBrand href="/">The Great Escape</NavbarBrand>
+            <NavbarToggler onClick={this.toggle} />
+            <Collapse isOpen={this.state.isOpen} navbar>
+              <Nav className="ml-auto" navbar>
+                <NavItem>
+                  <NavLink href="/components/">Components</NavLink>
+                </NavItem>
+                <NavItem>
+                  <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink>
+                </NavItem>
+                <UncontrolledDropdown nav inNavbar>
+                  <DropdownToggle nav caret>
+                    Options
+                  </DropdownToggle>
+                  <DropdownMenu right>
+                    <DropdownItem>
+                      Option 1
+                    </DropdownItem>
+                    <DropdownItem>
+                      Option 2
+                    </DropdownItem>
+                    <DropdownItem divider />
+                    <DropdownItem>
+                      Reset
+                    </DropdownItem>
+                  </DropdownMenu>
+                </UncontrolledDropdown>
+              </Nav>
+            </Collapse>
+          </Navbar>
+        </div>
+      );
+    }
   }
-}

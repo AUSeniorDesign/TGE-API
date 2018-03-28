@@ -1,17 +1,24 @@
 import React from "react";
 import Navigation from "./Navigation.jsx";
+import Login from "./Login.jsx";
+import { Container, Row } from "reactstrap";
+
 export default class App extends React.Component {
   render() {
     return (
       <div>
         <link
           rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
-          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
-          crossorigin="anonymous"
+          href="https://npmcdn.com/bootstrap@4.0.0/dist/css/bootstrap.min.css"
         />
-
-        <Navigation/>
+        <link
+          rel="text/javascript"
+          href="https://cdnjs.cloudflare.com/ajax/libs/reactstrap/4.8.0/reactstrap.min.js"
+        />
+        <Navigation />
+        <Container className="login-container">
+            <Login />
+        </Container>
       </div>
     );
   }
