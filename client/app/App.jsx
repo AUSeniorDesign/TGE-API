@@ -1,20 +1,17 @@
 import React from 'react';
+import App_Header from './components/App_Header.jsx';
+import Login from './components/Login.jsx';
+import Main_Menu from './components/Main_Menu.jsx';
+import Process_Orders from './components/Process_Orders.jsx';
+import Edit_Items from './components/Edit_Items.jsx';
 
 export default class App extends React.Component {
     render () {
         return (
-            <section className="hero is-primary">
-                <div className="hero-body">
-                    <div className="container">
-                        <h1 className="title">
-                            The Great Escape
-                        </h1>
-                        <h2 className="subtitle">
-                            Admin Portal
-                        </h2>
-                    </div>
-                </div>
-            </section>
+                <div className="App">
+                        <App_Header />
+                        <Login />
+                    </div>    
         );
     }
 }
