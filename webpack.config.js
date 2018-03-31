@@ -1,13 +1,11 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
 const webpack = require('webpack');
-
 
 module.exports = {
   entry: './client/index.jsx',
   output: {
-    filename: 'js/bundle.[hash].js',
+    filename: 'bundle.[hash].js',
     path: path.resolve(__dirname),
   },
   devServer: {
@@ -32,7 +30,6 @@ module.exports = {
       filename: 'index.html',
       inject: 'body'
     }),
-    new CleanWebpackPlugin(['./js/*.js', './js/*.map'], {'allowExternal': true}),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin()
   ]
