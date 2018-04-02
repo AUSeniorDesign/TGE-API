@@ -52,7 +52,7 @@ export class Login extends React.Component {
           Incorrect Username / Password.
         </p>
         <Button color="primary">Login</Button>
-        <p className="mt-3">Or</p>
+        <p className="mt-3">Don't have an account?</p>
         <Button tag={Link} to="/register" color="primary">Create Account</Button>
       </Jumbotron>
     );

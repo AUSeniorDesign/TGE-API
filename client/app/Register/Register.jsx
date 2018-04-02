@@ -43,17 +43,19 @@ export class Register extends React.Component {
     return (
       <Jumbotron className="login">
         <h1 className="display-4">Register</h1>
+        <Input placeholder="name" />
         <InputGroup className="mt-3">
           <Input placeholder="username" />
           <InputGroupAddon addonType="append">@example.com</InputGroupAddon>
         </InputGroup>
         <Input placeholder="password" />
+        <Input placeholder="re-enter password" />
         <p className="text-danger" hidden>
           Incorrect Username / Password.
         </p>
-        <Button color="primary">Login</Button>
-        <p className="mt-3">Or</p>
-        <Button tag={Link} to="/register" color="primary">Create Account</Button>
+        <Button color="primary">Register</Button>
+        <p className="mt-3">Already Signed Up?</p>
+        <Button tag={Link} to="/login" color="primary">Login</Button>
       </Jumbotron>
     );
   }

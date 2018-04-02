@@ -27,9 +27,10 @@ export default class App extends React.Component {
             <Navigation />
             <Container className="main-container">
               <div>
+                <PrivateRoute exact path="/" component={Order} />
                 <Route path="/login" component={Login} />
                 <Route path="/register" component={Register} />
-                <PrivateRoute exact path="/order" component={Order} />
+                <PrivateRoute path="/order" component={Order} />
                 <PrivateRoute path="/user" component={User} />
                 <PrivateRoute path="/item" component={Register} />
               </div>
