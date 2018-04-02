@@ -1,7 +1,14 @@
 import React from "react";
-import Navigation from "./Navigation.jsx";
-import Login from "./Login.jsx";
+import { Router, Route } from "react-router-dom";
+import { PrivateRoute } from "./PrivateRoute.jsx";
+import { Navigation } from "./Components";
 import { Container, Row } from "reactstrap";
+import { history } from "./Helpers";
+import { Login } from "./Login";
+import { Register } from "./Register";
+import { User } from "./User";
+import { Order } from "./Order";
+import { Item } from "./Item";
 
 export default class App extends React.Component {
   render() {
@@ -15,10 +22,20 @@ export default class App extends React.Component {
           rel="text/javascript"
           href="https://cdnjs.cloudflare.com/ajax/libs/reactstrap/4.8.0/reactstrap.min.js"
         />
-        <Navigation/>
-        <Container className="main-container">
-            <Login/>
-        </Container>
+        <Router history={history}>
+          <div>
+            <Navigation />
+            <Container className="main-container">
+              <div>
+                <Route path="/login" component={Login} />
+                <Route path="/register" component={Register} />
+                <PrivateRoute exact path="/order" component={Order} />
+                <PrivateRoute path="/user" component={User} />
+                <PrivateRoute path="/item" component={Register} />
+              </div>
+            </Container>
+          </div>
+        </Router>
       </div>
     );
   }

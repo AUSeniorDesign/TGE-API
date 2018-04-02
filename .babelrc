@@ -1,6 +1,7 @@
 {
     "presets" : ["env", "react", "es2017"],
     "plugins": [
-        "react-hot-loader/babel"
+        "react-hot-loader/babel",
+        "transform-object-rest-spread"
     ]
 }

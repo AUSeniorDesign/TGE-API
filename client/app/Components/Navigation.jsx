@@ -13,11 +13,13 @@ import {
   DropdownItem
 } from "reactstrap";
 
-export default class Navigation extends React.Component {
+import { Link } from "react-router-dom";
+
+export class Navigation extends React.Component {
   constructor(props) {
     super(props);
 
-    this.options = []
+    this.options = [];
 
     this.toggle = this.toggle.bind(this);
     this.state = {
@@ -37,7 +39,25 @@ export default class Navigation extends React.Component {
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>
             <NavItem>
-              <NavLink target="_blank" href="http://stores.ebay.com/TheGreatEscapeOnLine">
+              <NavLink tag={Link} to="/order">
+                Orders
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink tag={Link} to="/item">
+                Items
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink tag={Link} to="/user">
+                Users
+              </NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink
+                target="_blank"
+                href="http://stores.ebay.com/TheGreatEscapeOnLine"
+              >
                 eBay Store
               </NavLink>
             </NavItem>

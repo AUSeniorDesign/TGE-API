@@ -1,5 +1,5 @@
 import React from "react";
-import ErrorMessage from "./ErrorMessage.jsx";
+import { ErrorMessage } from "../Components";
 import {
   Jumbotron,
   Button,
@@ -7,8 +7,9 @@ import {
   Input,
   InputGroupAddon
 } from "reactstrap";
+import { Link } from "react-router-dom";
 
-export default class Login extends React.Component {
+export class Register extends React.Component {
   constructor(props) {
     super(props);
 
@@ -41,7 +42,7 @@ export default class Login extends React.Component {
   render() {
     return (
       <Jumbotron className="login">
-        <h1 className="display-4">Login</h1>
+        <h1 className="display-4">Register</h1>
         <InputGroup className="mt-3">
           <Input placeholder="username" />
           <InputGroupAddon addonType="append">@example.com</InputGroupAddon>
@@ -52,7 +53,7 @@ export default class Login extends React.Component {
         </p>
         <Button color="primary">Login</Button>
         <p className="mt-3">Or</p>
-        <Button color="primary">Create Account</Button>
+        <Button tag={Link} to="/register" color="primary">Create Account</Button>
       </Jumbotron>
     );
   }
