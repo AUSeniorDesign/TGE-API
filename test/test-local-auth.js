@@ -4,7 +4,6 @@ var should = require('chai').should();
 
 // Below code demonstrates using various methods of testing
 describe('Testing local auth / password hashing', function() {
-
   describe('Testing with assert', function() {
     it('Tests assert.equal', function() {
       assert.equal("a", "a");

@@ -1,5 +1,15 @@
 // customize your style here
-$primary: red;
 
-// use the Bulma stylesheet framework
-@import "node_modules/bulma/bulma";
+.main-container {
+    height: 100%;
+}
+
+.login {
+    margin: 0 auto;
+    margin-top: 40px;
+    max-width: 800px;
+}
+
+.login > input {
+    margin: 20px 0;
+}

@@ -155,7 +155,7 @@ module.exports = function(app, passport) {
 
   // Get User by ID
   // Employees / Admins only
-  router.get("/:id", passport.isEmployee, function(req, res, next) {
+  router.get("/:id", passport.isParamUser, function(req, res, next) {
     User.findById(req.params.id)
       .then(function(user) {
         res.status(200).json(user);
