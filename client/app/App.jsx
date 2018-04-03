@@ -5,7 +5,7 @@ import { Navigation } from "./Components";
 import { Container, Row } from "reactstrap";
 import { history } from "./Helpers";
 import { Login } from "./Login";
-import { Register } from "./Register";
+import { Signup } from "./Signup";
 import { User } from "./User";
 import { Order } from "./Order";
 import { Item } from "./Item";
@@ -29,10 +29,10 @@ export default class App extends React.Component {
               <div>
                 <PrivateRoute exact path="/" component={Order} />
                 <Route path="/login" component={Login} />
-                <Route path="/register" component={Register} />
+                <Route path="/signup" component={Signup} />
                 <PrivateRoute path="/order" component={Order} />
                 <PrivateRoute path="/user" component={User} />
-                <PrivateRoute path="/item" component={Register} />
+                <PrivateRoute path="/item" component={Signup} />
               </div>
             </Container>
           </div>

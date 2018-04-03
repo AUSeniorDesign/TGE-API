@@ -31,6 +31,7 @@ export class Navigation extends React.Component {
       isOpen: !this.state.isOpen
     });
   }
+  
   render() {
     return (
       <Navbar color="primary" dark expand="md">
@@ -63,7 +64,7 @@ export class Navigation extends React.Component {
             </NavItem>
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret>
-                Options
+                Settings
               </DropdownToggle>
               <DropdownMenu right>
                 <DropdownItem>Account</DropdownItem>

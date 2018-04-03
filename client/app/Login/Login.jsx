@@ -8,14 +8,18 @@ import {
   InputGroupAddon
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import { userActions } from '../Actions';
+import { connect } from 'react-redux';
 
-export class Login extends React.Component {
+class Login extends React.Component {
   constructor(props) {
     super(props);
 
+    this.props.dispatch(userActions.logout());
+
     this.state = {
-      username: "",
-      password: "",
+      username: '',
+      password: '',
       submitted: false
     };
 
@@ -52,9 +56,20 @@ export class Login extends React.Component {
           Incorrect Username / Password.
         </p>
         <Button color="primary">Login</Button>
+        <br/><br/>
         <p className="mt-3">Don't have an account?</p>
-        <Button tag={Link} to="/register" color="primary">Create Account</Button>
+        <Button tag={Link} to="/signup" color="primary">Create Account</Button>
       </Jumbotron>
     );
   }
 }
+
+function mapStateToProps(state) {
+  const { loggingIn } = state.authentication;
+  return {
+      loggingIn
+  };
+}
+
+const connectedLoginPage = connect(mapStateToProps)(Login);
+export { connectedLoginPage as Login }; 
