@@ -37,6 +37,8 @@ class Signup extends React.Component {
         [name]: value
       }
     });
+    console.log(name);
+    console.log(value);
   }
 
   handleSubmit(event) {
