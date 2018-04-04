@@ -1,5 +1,5 @@
 import React from "react";
-import { Router, Route } from "react-router-dom";
+import { HashRouter, Route } from "react-router-dom";
 import { PrivateRoute } from "./PrivateRoute.jsx";
 import { Navigation } from "./Components";
 import { Container, Row } from "reactstrap";
@@ -22,7 +22,7 @@ export default class App extends React.Component {
           rel="text/javascript"
           href="https://cdnjs.cloudflare.com/ajax/libs/reactstrap/4.8.0/reactstrap.min.js"
         />
-        <Router history={history}>
+        <HashRouter history={history}>
           <div>
             <Navigation />
             <Container className="main-container">
@@ -36,7 +36,7 @@ export default class App extends React.Component {
               </div>
             </Container>
           </div>
-        </Router>
+        </HashRouter>
       </div>
     );
   }
