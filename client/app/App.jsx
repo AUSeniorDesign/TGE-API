@@ -32,7 +32,7 @@ export default class App extends React.Component {
                 <Route path="/signup" component={Signup} />
                 <PrivateRoute path="/order" component={Order} />
                 <PrivateRoute path="/user" component={User} />
-                <PrivateRoute path="/item" component={Signup} />
+                <PrivateRoute path="/item" component={Item} />
               </div>
             </Container>
           </div>

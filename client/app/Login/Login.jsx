@@ -8,18 +8,19 @@ import {
   InputGroupAddon
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import { userActions } from '../Actions';
-import { connect } from 'react-redux';
+import { userActions } from "../Actions";
+import { connect } from "react-redux";
+import { history } from '../Helpers';
 
 class Login extends React.Component {
   constructor(props) {
     super(props);
 
-    this.props.dispatch(userActions.logout());
+    // this.props.dispatch(userActions.logout());
 
     this.state = {
-      username: '',
-      password: '',
+      username: "",
+      password: "",
       submitted: false
     };
 
@@ -39,26 +40,45 @@ class Login extends React.Component {
     const { username, password } = this.state;
     const { dispatch } = this.props;
     if (username && password) {
-      dispatch(userActions.login(username, password));
+      localStorage.setItem("user", JSON.stringify({username}));
+      history.push("/order");
+      //dispatch(userActions.login(username, password));
     }
   }
 
   render() {
+    const { username, password, submitted } = this.state;
     return (
-      <Jumbotron className="login">
+      <Jumbotron className="jumbotron login">
         <h1 className="display-4">Login</h1>
         <InputGroup className="mt-3">
-          <Input placeholder="username" />
+          <Input
+            placeholder="username"
+            name="username"
+            value={username}
+            onChange={this.handleChange}
+          />
           <InputGroupAddon addonType="append">@example.com</InputGroupAddon>
         </InputGroup>
-        <Input placeholder="password" />
+        <Input
+          placeholder="password"
+          name="password"
+          type="password"
+          value={password}
+          onChange={this.handleChange}
+        />
         <p className="text-danger" hidden>
           Incorrect Username / Password.
         </p>
-        <Button color="primary">Login</Button>
-        <br/><br/>
+        <Button color="primary" onClick={this.handleSubmit}>
+          Login
+        </Button>
+        <br />
+        <br />
         <p className="mt-3">Don't have an account?</p>
-        <Button tag={Link} to="/signup" color="primary">Create Account</Button>
+        <Button tag={Link} to="/signup" color="primary">
+          Create Account
+        </Button>
       </Jumbotron>
     );
   }
@@ -67,9 +87,9 @@ class Login extends React.Component {
 function mapStateToProps(state) {
   const { loggingIn } = state.authentication;
   return {
-      loggingIn
+    loggingIn
   };
 }
 
 const connectedLoginPage = connect(mapStateToProps)(Login);
-export { connectedLoginPage as Login }; 
+export { connectedLoginPage as Login };

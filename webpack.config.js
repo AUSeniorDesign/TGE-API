@@ -5,8 +5,8 @@ const webpack = require('webpack');
 module.exports = {
   entry: './client/index.jsx',
   output: {
-    filename: 'bundle.[hash].js',
-    path: path.resolve(__dirname),
+    filename: 'js/bundle.[hash].js',
+    path: path.resolve(__dirname, 'public'),
   },
   devServer: {
     hot: true

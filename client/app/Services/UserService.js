@@ -86,6 +86,7 @@ function signUp(user) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(user)
   };
+  localStorage.setItem('user', JSON.stringify(user));
 
   return fetch("/users/signup", requestOptions).then(handleResponse);
 }
