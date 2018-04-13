@@ -26,7 +26,7 @@ React is a framework for creating user interfaces in modular components.
 
 ### Documentation
 Simple TGE API Documentation can be found
-[here](tge.mybluemix.net/docs/server/routes/index.html)
+[here](http://tge.mybluemix.net/docs/server/routes/index.html)
  
 
 <a name="requirements"></a>
