@@ -1,5 +1,5 @@
 import React from "react";
-import { Router, Route } from "react-router-dom";
+import { HashRouter, Route } from "react-router-dom";
 import { PrivateRoute } from "./PrivateRoute.jsx";
 import { Navigation } from "./Components";
 import { Container, Row } from "reactstrap";
@@ -9,6 +9,7 @@ import { Signup } from "./Signup";
 import { User } from "./User";
 import { Order } from "./Order";
 import { Item } from "./Item";
+import { NewArrival } from "./NewArrival";
 
 export default class App extends React.Component {
   render() {
@@ -22,7 +23,7 @@ export default class App extends React.Component {
           rel="text/javascript"
           href="https://cdnjs.cloudflare.com/ajax/libs/reactstrap/4.8.0/reactstrap.min.js"
         />
-        <Router history={history}>
+        <HashRouter history={history}>
           <div>
             <Navigation />
             <Container className="main-container">
@@ -30,13 +31,14 @@ export default class App extends React.Component {
                 <PrivateRoute exact path="/" component={Order} />
                 <Route path="/login" component={Login} />
                 <Route path="/signup" component={Signup} />
+                <PrivateRoute path="/newarrivals" component={NewArrival} />
                 <PrivateRoute path="/order" component={Order} />
                 <PrivateRoute path="/user" component={User} />
                 <PrivateRoute path="/item" component={Item} />
               </div>
             </Container>
           </div>
-        </Router>
+        </HashRouter>
       </div>
     );
   }

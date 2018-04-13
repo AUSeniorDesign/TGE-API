@@ -9,7 +9,7 @@ module.exports = {
     path: path.resolve(__dirname, 'public'),
   },
   devServer: {
-    hot: true
+    hot: true,
   },
   module : {
     loaders : [

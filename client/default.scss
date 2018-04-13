@@ -1,16 +1,29 @@
 // customize your style here
 
 .main-container {
-    height: 100%;
-    margin-top: 40px;
-
+  height: 100%;
+  margin-top: 40px;
 }
 
 .jumbotron {
-    margin: 0 auto;
-    max-width: 800px;
+  margin: 0 auto;
+  max-width: 800px;
+}
+
+.dropzone {
+  display: flex;
+  width: 300px;
+  height: 120px;
+  border: 2px dashed black;
+  border-radius: 5px;
+  justify-content: center;
+  align-items: center;
+}
+
+.dropzone > p {
+    margin: 0 20px;
 }
 
 .login > input {
-    margin: 20px 0;
+  margin: 20px 0;
 }
