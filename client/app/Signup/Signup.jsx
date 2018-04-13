@@ -44,7 +44,6 @@ class Signup extends React.Component {
   }
 
   handleSubmit(event) {
-    console.log("Submitted");
     event.preventDefault();
 
     this.setState({ submitted: true });

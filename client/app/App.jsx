@@ -9,6 +9,7 @@ import { Signup } from "./Signup";
 import { User } from "./User";
 import { Order } from "./Order";
 import { Item } from "./Item";
+import { NewArrival } from "./NewArrival";
 
 export default class App extends React.Component {
   render() {
@@ -30,6 +31,7 @@ export default class App extends React.Component {
                 <PrivateRoute exact path="/" component={Order} />
                 <Route path="/login" component={Login} />
                 <Route path="/signup" component={Signup} />
+                <PrivateRoute path="/newarrivals" component={NewArrival} />
                 <PrivateRoute path="/order" component={Order} />
                 <PrivateRoute path="/user" component={User} />
                 <PrivateRoute path="/item" component={Item} />
