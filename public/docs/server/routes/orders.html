@@ -91,12 +91,9 @@
 <span class="hljs-keyword">const</span> passport = <span class="hljs-built_in">require</span>(<span class="hljs-string">'passport'</span>);
 <span class="hljs-keyword">const</span> ebay = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../middleware/ebay.js'</span>);
 <span class="hljs-keyword">const</span> Order = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models'</span>).Order;
-
-<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">isLoggedIn</span>(<span class="hljs-params">req, res, next</span>) </span>{
-    <span class="hljs-keyword">if</span> (req.isAuthenticated())
-        <span class="hljs-keyword">return</span> next();
-    res.status(<span class="hljs-number">401</span>).end(<span class="hljs-string">'Not logged in'</span>);
-}
+<span class="hljs-keyword">const</span> User = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models'</span>).User;
+<span class="hljs-keyword">const</span> OrderItem = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models'</span>).OrderItem;
+<span class="hljs-keyword">const</span> Address = <span class="hljs-built_in">require</span>(<span class="hljs-string">'../models'</span>).Address;
 
 <span class="hljs-built_in">module</span>.exports = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">app, passport</span>) </span>{
     <span class="hljs-keyword">var</span> router = express.Router();</pre></div></div>
@@ -115,6 +112,8 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>    <span class="hljs-comment">/**
+     * More description coming soon...
+     * 
      * Order Body Format:
      * 
      * order: {
@@ -122,16 +121,20 @@
      * }
      * 
      */</span>
-    router.post(<span class="hljs-string">'/'</span>, ebay.updateInventoryQuantity, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res</span>) </span>{
-        Order.create(req.body)
-            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">order</span>) </span>{
-                order.setUser(req.user).then(<span class="hljs-function"><span class="hljs-params">order</span> =&gt;</span> {
-                    res.status(<span class="hljs-number">200</span>).json(order);
+    router.post(<span class="hljs-string">'/'</span>, 
+        passport.isLoggedIn, 
+        ebay.updateInventoryQuantity, 
+        <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res</span>) </span>{
+
+            Order.create(req.body)
+                .then(<span class="hljs-function"><span class="hljs-params">order</span> =&gt;</span> {
+                    order.setUser(req.user).then(<span class="hljs-function"><span class="hljs-params">order</span> =&gt;</span> {
+                        res.status(<span class="hljs-number">200</span>).json(order);
+                    });
+                })
+                .catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> {
+                    res.status(<span class="hljs-number">500</span>).json(error);
                 });
-            })
-            .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error</span>) </span>{
-                res.status(<span class="hljs-number">500</span>).json(error);
-            });
     });</pre></div></div>
             
         </li>
@@ -148,11 +151,13 @@
             </div>
             
             <div class="content"><div class='highlight'><pre>    router.get(<span class="hljs-string">'/'</span>, passport.isEmployee, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res, next</span>) </span>{
-        Order.findAll()
-            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">orders</span>) </span>{
+        Order.findAll({
+            <span class="hljs-attr">include</span>: [OrderItem, User, Address]
+          })
+            .then(<span class="hljs-function"><span class="hljs-params">orders</span> =&gt;</span> {
                 res.status(<span class="hljs-number">200</span>).json(orders);
             })
-            .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error</span>) </span>{
+            .catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> {
                 res.status(<span class="hljs-number">500</span>).json(error);
             });
     });</pre></div></div>
@@ -166,16 +171,22 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>Get Order by ID</p>
+              <p>Get Orders for User by ID</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    router.get(<span class="hljs-string">'/:id'</span>, passport.isLoggedIn, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res, next</span>) </span>{
-        Order.findById(req.params.id)
-            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">order</span>) </span>{
-                res.status(<span class="hljs-number">200</span>).json(order);
+            <div class="content"><div class='highlight'><pre>    router.get(<span class="hljs-string">'/:userId'</span>, passport.isParamUser, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res, next</span>) </span>{
+        Order.findAll({
+            <span class="hljs-attr">where</span>: { <span class="hljs-attr">UserId</span>: req.params.userId },
+            <span class="hljs-attr">include</span>: [OrderItem, 
+                      User, 
+                      { <span class="hljs-attr">model</span>: Address, <span class="hljs-attr">as</span>: <span class="hljs-string">'billingAddress'</span> }, 
+                      { <span class="hljs-attr">model</span>: Address, <span class="hljs-attr">as</span>: <span class="hljs-string">'shippingAddress'</span> },]
+        })
+            .then(<span class="hljs-function"><span class="hljs-params">orders</span> =&gt;</span> {
+                res.status(<span class="hljs-number">200</span>).send(orders);
             })
-            .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error</span>) </span>{
+            .catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> {
                 res.status(<span class="hljs-number">500</span>).json(error);
             });
     });</pre></div></div>
@@ -193,21 +204,21 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    router.put(<span class="hljs-string">'/:id'</span>, passport.isLoggedIn, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res, next</span>) </span>{
-        User.update(req.body, {
+            <div class="content"><div class='highlight'><pre>    router.put(<span class="hljs-string">'/:id'</span>, passport.isEmployee, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, res, next</span>) </span>{
+        Order.update(req.body, {
             <span class="hljs-attr">where</span>: {
                 <span class="hljs-attr">id</span>: req.params.id
             }
         })
-            .then(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">updatedRecords</span>) </span>{
+            .then(<span class="hljs-function"><span class="hljs-params">updatedRecords</span> =&gt;</span> {
                 res.status(<span class="hljs-number">200</span>).json(updatedRecords);
             })
-            .catch(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">error</span>) </span>{
+            .catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> {
                 res.status(<span class="hljs-number">500</span>).json(error);
             });
     });
 
-    app.use(<span class="hljs-string">"/users"</span>, router);
+    app.use(<span class="hljs-string">"/orders"</span>, router);
 }</pre></div></div>
             
         </li>

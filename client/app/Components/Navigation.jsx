@@ -50,13 +50,13 @@ class Navigation extends React.Component {
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>
             <NavItem>
-              <NavLink tag={Link} to="/newarrivals">
-                New Item Posts
+              <NavLink tag={Link} to="/order">
+                Orders
               </NavLink>
             </NavItem>
             <NavItem>
-              <NavLink tag={Link} to="/order">
-                Orders
+              <NavLink tag={Link} to="/newarrivals">
+                New Item Posts
               </NavLink>
             </NavItem>
             <NavItem>

@@ -137,10 +137,10 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  router.post(<span class="hljs-string">"/"</span>, passport.isLoggedIn, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+            <div class="content"><div class='highlight'><pre>  router.post(<span class="hljs-string">"/:itemId"</span>, passport.isLoggedIn, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
     CartItem.create({
       <span class="hljs-attr">UserId</span>: req.user.id,
-      <span class="hljs-attr">ItemId</span>: req.body.itemId
+      <span class="hljs-attr">ItemId</span>: req.params.itemId
     }).then(<span class="hljs-function"><span class="hljs-params">cart</span> =&gt;</span> {
       CartItem.findAll({
         <span class="hljs-attr">where</span>: { <span class="hljs-attr">UserId</span>: cart.UserId },
@@ -164,26 +164,23 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>Delete Item Shopping Cart</p>
+              <p>Delete Item Shopping Cart by CartItem ID</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  router.delete(<span class="hljs-string">"/"</span>, passport.isLoggedIn, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
-    CartItem.create({
-      <span class="hljs-attr">UserId</span>: req.params.id,
-      <span class="hljs-attr">ItemId</span>: req.body.itemId
-    }).then(<span class="hljs-function"><span class="hljs-params">cart</span> =&gt;</span> {
-      CartItem.findAll({
-        <span class="hljs-attr">where</span>: { <span class="hljs-attr">UserId</span>: cart.UserId },
-        <span class="hljs-attr">include</span>: [Item]
+            <div class="content"><div class='highlight'><pre>  router.delete(<span class="hljs-string">"/:itemId"</span>, passport.isLoggedIn, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+    CartItem.destroy({
+      <span class="hljs-attr">where</span>: {
+        <span class="hljs-attr">UserId</span>: req.user.id,
+        <span class="hljs-attr">id</span>: req.params.itemId
+      }
+    })
+      .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">deletedRecords</span>) </span>{
+        res.status(<span class="hljs-number">200</span>).send(deletedRecords + <span class="hljs-string">' deleted'</span>);
       })
-        .then(<span class="hljs-function"><span class="hljs-params">carts</span> =&gt;</span> {
-          res.status(<span class="hljs-number">200</span>).json(carts);
-        })
-        .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error</span>) </span>{
-          res.status(<span class="hljs-number">500</span>).json(error);
-        });
-    });
+      .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error</span>) </span>{
+        res.status(<span class="hljs-number">500</span>).json(error);
+      });
   });
 
   app.use(<span class="hljs-string">"/cart"</span>, router);

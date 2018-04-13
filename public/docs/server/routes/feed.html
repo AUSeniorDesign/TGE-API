@@ -88,7 +88,19 @@
  */</span>
 
 <span class="hljs-keyword">const</span> express = <span class="hljs-built_in">require</span>(<span class="hljs-string">"express"</span>);
-<span class="hljs-keyword">const</span> NewArrivalPost = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../models"</span>).NewArrivalPost;</pre></div></div>
+<span class="hljs-keyword">const</span> NewArrivalPost = <span class="hljs-built_in">require</span>(<span class="hljs-string">"../models"</span>).NewArrivalPost;
+
+<span class="hljs-keyword">const</span> multer = <span class="hljs-built_in">require</span>(<span class="hljs-string">"multer"</span>);
+<span class="hljs-keyword">const</span> storage = multer.diskStorage({
+  <span class="hljs-attr">destination</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, file, cb</span>) </span>{
+    cb(<span class="hljs-literal">null</span>, <span class="hljs-string">"public/images/"</span>)
+  },
+  <span class="hljs-attr">filename</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">req, file, cb</span>) </span>{
+    cb(<span class="hljs-literal">null</span>, <span class="hljs-built_in">Date</span>.now().toString() + <span class="hljs-string">'.jpg'</span>)
+  }
+});
+
+<span class="hljs-keyword">const</span> upload = multer({<span class="hljs-attr">storage</span>: storage})</pre></div></div>
             
         </li>
         
@@ -119,8 +131,8 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  router.get(<span class="hljs-string">"/"</span>, passport.isEmployee, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
-    NewArrivalPost.findAll({ <span class="hljs-attr">order</span>: [<span class="hljs-string">"id"</span>, <span class="hljs-string">"DESC"</span>] })
+            <div class="content"><div class='highlight'><pre>  router.get(<span class="hljs-string">"/"</span>, passport.isLoggedIn, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+    NewArrivalPost.findAll({ <span class="hljs-attr">order</span>: [[<span class="hljs-string">"id"</span>, <span class="hljs-string">"DESC"</span>]] })
       .then(<span class="hljs-function"><span class="hljs-params">posts</span> =&gt;</span> {
         res.status(<span class="hljs-number">200</span>).json(posts);
       })
@@ -145,19 +157,25 @@
             <div class="content"><div class='highlight'><pre>  <span class="hljs-comment">/**
    * Employees Only.
    * 
-   *  Body MUST be in the following format:
-   *  req.body = {
-   *      post: {
+   *  Multipart Upload Request 
+   *  MUST be in the following format:
+   *  multipart form = [
    *          description: "Here's a rare collectible that came in today",
-   *          images: "http://image.com/collectible_1", "http://image.com/collectible_2"
    *          store: "Charlotte Avenue Superstore"
-   *      }
-   *  }
+   *          file: file data
+   *  ]
+   * 
+   * With any and all images in a multipart form data array called 'photos'
    *
    */</span>
-  router.post(<span class="hljs-string">"/"</span>, passport.isEmployee, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
-    NewArrivalPost.create(req.body)
-      .then(<span class="hljs-function"><span class="hljs-params">posts</span> =&gt;</span> {
+  router.post(<span class="hljs-string">"/"</span>, passport.isEmployee, upload.array(<span class="hljs-string">'photos'</span>), <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+    NewArrivalPost.create({
+      <span class="hljs-attr">description</span>: req.body.description,
+      <span class="hljs-attr">store</span>: req.body.store,
+      <span class="hljs-attr">images</span>: req.files.map(<span class="hljs-function"><span class="hljs-params">file</span> =&gt;</span> req.headers.host + <span class="hljs-string">'/'</span> 
+        + file.path.replace(<span class="hljs-string">'public/'</span>, <span class="hljs-string">''</span>)).toString()
+    })
+      .then(<span class="hljs-function"><span class="hljs-params">post</span> =&gt;</span> {
         res.status(<span class="hljs-number">200</span>).json(post);
       })
       .catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> {
@@ -179,19 +197,14 @@ Admins / Employees Only</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  router.put(<span class="hljs-string">"/:id"</span>, passport.isEmployee, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+            <div class="content"><div class='highlight'><pre>  router.put(<span class="hljs-string">"/:id"</span>, passport.isEmployee, upload.array(<span class="hljs-string">'newPhotos'</span>), <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
     NewArrivalPost.update(req.body.post, {
       <span class="hljs-attr">where</span>: {
         <span class="hljs-attr">id</span>: req.params.id
       }
     })
       .then(<span class="hljs-function"><span class="hljs-params">updatedRecords</span> =&gt;</span> {
-        res.status(<span class="hljs-number">200</span>).json(updatedRecords);
-      })
-      .catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> {
-        res.status(<span class="hljs-number">500</span>).json(error);
-      });
-  });</pre></div></div>
+        res.status(<span class="hljs-number">200</span>).json(updatedRecords);</pre></div></div>
             
         </li>
         
@@ -202,8 +215,43 @@ Admins / Employees Only</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
+              <p>TODO: Update new image photos</p>
+
+            </div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>TODO: Cross reference images field after upload and delete non-present images from 
+uploads folder</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>
+      })
+      .catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> {
+        res.status(<span class="hljs-number">500</span>).json(error);
+      });
+  });</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
               <p>Delete New Arrival Post
-Admins / Employees Only</p>
+Admins / Employees Only
+TODO: Delete Image Files if not referenced somewhere else</p>
 
             </div>
             
@@ -214,7 +262,7 @@ Admins / Employees Only</p>
       }
     })
       .then(<span class="hljs-function"><span class="hljs-params">deletedRecords</span> =&gt;</span> {
-        res.status(<span class="hljs-number">200</span>).json(deletedRecords);
+        res.status(<span class="hljs-number">200</span>).send(deletedRecords + <span class="hljs-string">' deleted'</span>);
       })
       .catch(<span class="hljs-function"><span class="hljs-params">error</span> =&gt;</span> {
         res.status(<span class="hljs-number">500</span>).json(error);

@@ -287,7 +287,7 @@
    * their user staus to 'admin', 'employee', or down to 'customer'.
    */</span>
   router.get(<span class="hljs-string">"/"</span>, passport.isAdmin, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
-    User.findAll({ <span class="hljs-attr">include</span>: [Credential, Facebook] })
+    User.findAll({ <span class="hljs-attr">include</span>: [Credential, Facebook, Address] })
       .then(<span class="hljs-function"><span class="hljs-params">users</span> =&gt;</span> {
         res.status(<span class="hljs-number">200</span>).json(users);
       })
@@ -336,7 +336,7 @@ Employees / Admins only</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  router.get(<span class="hljs-string">"/:id"</span>, passport.isEmployee, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
+            <div class="content"><div class='highlight'><pre>  router.get(<span class="hljs-string">"/:id"</span>, passport.isParamUser, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">req, res, next</span>) </span>{
     User.findById(req.params.id)
       .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">user</span>) </span>{
         res.status(<span class="hljs-number">200</span>).json(user);
@@ -422,7 +422,7 @@ TODO: Disable endpoint before production release.</p>
       }
     })
       .then(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">deletedRecords</span>) </span>{
-        res.status(<span class="hljs-number">200</span>).json(deletedRecords);
+        res.status(<span class="hljs-number">200</span>).send(deletedRecords + <span class="hljs-string">' deleted'</span>);
       })
       .catch(<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">error</span>) </span>{
         res.status(<span class="hljs-number">500</span>).json(error);

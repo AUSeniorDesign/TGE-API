@@ -25,14 +25,12 @@ The React web starter contains an opinionated set of components for modern web d
 React is a framework for creating user interfaces in modular components.
 
 ### Documentation
-Simple TGE Documentation webpages can be found here
-[here](docs/server/routes/index.html)
+Simple TGE API Documentation can be found
+[here](tge.mybluemix.net/docs/server/routes/index.html)
  
 
-
-
 <a name="requirements"></a>
-### Requirements
+### Development Requirements
 #### Local Development Tools Setup (optional)
 
 - Install the latest [NodeJS](https://nodejs.org/en/download/) 6+ LTS version.
@@ -56,6 +54,10 @@ Service credentials are taken from the VCAP_SERVICES environment variable if run
 <a name="run"></a>
 ### Run
 
+Running the Node application both serves the TGE API, as well as the webpack-ed React application that serves as the Admin Portal.
+
+When running the application locally, the admin portal homepage can be found at ```localhost:3000```, and all API endpoints at their respective routes as defined in the `server/routes` directory.
+
 The entry point of the Node app is ```server/server.js```, and you can spin it up with any of the following commands: 
 
 ```
@@ -66,17 +68,27 @@ node server/server.js
 npm run reset
 ```
 
-```npm run reset``` currently clears out the DB and reloads the product database from the CSV file exported from inkFrog.
+IMPORTANT: ```npm run reset``` clears out the SQL database and reloads the web app. It is useful only during initial development when making changes to the database schema.
+
+### Run Frontend Web App Only
+
+The entry point of the React app is ```client/index.jsx```, and you if you want to exclusively run it with webpack-dev-server (for rapid development with Hot Module Replacement) you can use this command: 
+
+```
+npm run live-reload
+```
+
+The ```live-reload``` script serves the web application at http://0.0.0.0:8080/, and will update as you make changes to the .jsx and .scss files.
 
 #### Using IBM Cloud development CLI
-The IBM Cloud development plugin makes it easy to compile and run your application if you do not have all of the tools installed on your computer yet. Your application will be compiled with Docker containers. To compile and run your app, run:
+The IBM Cloud development plugin makes it easy to compile and run your application if you do not have all of the tools installed on your computer yet. In this situation, your application will be compiled with Docker containers, similarly to how it will be built when publishing to IBM Cloud. To compile and run your app, run:
 
 ```bash
 bx dev build
 bx dev run
 ```
 
-If you encounter `'dev' is not a registered command. See 'bx help'.` make sure you have installed the IBM Cloud CLI:
+Note: If you encounter `'dev' is not a registered command. See 'bx help'.` make sure you have installed the IBM Cloud CLI:
 
 On macOS and Linux:
 ```
@@ -106,11 +118,18 @@ gulp
 ```
 
 
-##### Endpoints
+##### API Endpoints
 
-Your application is running at: `http://localhost:3000/` in your browser.
+Your application will be running at: `http://localhost:3000` locally, or `http://tge.mybluemix.net` if published to IBM Cloud.
 
 - Health endpoint: `/appmetrics-dash`
+- Cart endpoint: `/cart`
+- New Arrivals endpoint: `/feed`
+- Items endpoint: `/items`
+- Orders endpoint: `/orders`
+- Users endpoint: `/users`
+
+The `/routes/public` "endpoint" in routes forwards requests for the web app and static resources to the `public` directory so they can be served appropriately. This setup is what keeps the entire system bundled into one Node environment.
 
 
 ##### Session Store

@@ -17,7 +17,7 @@
     "postinstall": "npm run build",
     "live-reload": "webpack-dev-server --progress --inline --config webpack.dev-standalone.js",
     "server-reload": "nodemon server/server.js",
-    "document": "docco server/routes/*.js",
+    "document": "docco server/routes/*.js -o public/docs",
     "restart": "npm run build && npm run start"
   },
   "dependencies": {
@@ -75,6 +75,7 @@
     "chai": "^4.0.0",
     "clean-webpack-plugin": "^0.1.19",
     "css-loader": "^0.28.7",
+    "docco": "^0.8.0",
     "foreman": "^2.0.0",
     "html-webpack-plugin": "^2.30.1",
     "mocha": "^3.4.2",
