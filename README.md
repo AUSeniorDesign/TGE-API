@@ -7,6 +7,7 @@ React Web project with ExpressJS on NodeJS
 
 ### Table of Contents
 * [Summary](#summary)
+* [Documentation](#documentation)
 * [Requirements](#requirements)
 * [Configuration](#configuration)
 * [Run](#run)
@@ -30,7 +31,7 @@ Simple TGE API Documentation can be found
  
 
 <a name="requirements"></a>
-### Development Requirements
+### Requirements
 #### Local Development Tools Setup (optional)
 
 - Install the latest [NodeJS](https://nodejs.org/en/download/) 6+ LTS version.

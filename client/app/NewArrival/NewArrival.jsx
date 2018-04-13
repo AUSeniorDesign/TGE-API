@@ -85,7 +85,7 @@ export class NewArrival extends React.Component {
         id: 5,
         name: "Post description 5",
         store: "Nashville"
-      },
+      }
     ];
 
     let columns = [
@@ -95,7 +95,7 @@ export class NewArrival extends React.Component {
       },
       {
         dataField: "name",
-        text: "Post Description",
+        text: "Post Description"
       },
       {
         dataField: "store",
@@ -106,7 +106,7 @@ export class NewArrival extends React.Component {
     return (
       <div>
         <Jumbotron>
-          <h1 className="display-5">Create New Items Post</h1>
+          <h1 className="display-4">New Product Post</h1>
           <br />
           <h3 className="display-6">Description</h3>
           <Input
