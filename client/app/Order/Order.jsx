@@ -2,8 +2,19 @@ import React from "react";
 import {
   Jumbotron
 } from "reactstrap";
-import BootstrapTable from "react-bootstrap-table-next";
+// import BootstrapTable from "react-bootstrap-table-next";
+import Button from "material-ui/Button";
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
+const qualityType = {
+  0: 'Pending',
+  1: 'Shipped',
+  2: 'Late'
+};
+
+function enumFormatter(cell, row, enumObject) {
+  return enumObject[cell];
+}
 export class Order extends React.Component {
   constructor(props) {
     super(props);
@@ -15,27 +26,32 @@ export class Order extends React.Component {
       {
         id: 1,
         name: "Customer name 1",
-        total: 100
+        total: 200,
+        status: 0
       },
       {
         id: 2,
         name: "Customer name 2",
-        total: 100
+        total: 30,
+        status: 0
       },
       {
         id: 3,
         name: "Customer name 3",
-        total: 100
+        total: 10,
+        status: 2
       },
       {
         id: 4,
         name: "Customer name 4",
-        total: 100
+        total: 900,
+        status: 1
       },
       {
         id: 5,
         name: "Customer name 5",
-        total: 100
+        total: 500,
+        status: 2
       },
     ];
 
@@ -51,6 +67,10 @@ export class Order extends React.Component {
       {
         dataField: "total",
         text: "Order Total"
+      },
+      {
+        dataField: "status",
+        text: "Order Status"
       }
     ];
 
@@ -59,14 +79,13 @@ export class Order extends React.Component {
         <Jumbotron>
           <h1 className="display-4">Orders</h1>
           <br/>
-          <BootstrapTable
-            keyField="id"
-            data={orders}
-            columns={columns}
-            striped
-            hover
-            condensed
-          />
+          <BootstrapTable data={ orders }>
+        <TableHeaderColumn dataField='id' isKey>Order ID</TableHeaderColumn>
+        <TableHeaderColumn dataField='name'>Order Name</TableHeaderColumn>
+        <TableHeaderColumn dataField='total'>Order Total</TableHeaderColumn>
+        <TableHeaderColumn dataField='status' filterFormatted dataFormat={ enumFormatter } formatExtraData={ qualityType }
+          filter={ { type: 'SelectFilter', options: qualityType } }>Order Status</TableHeaderColumn>
+      </BootstrapTable>
         </Jumbotron>
       </div>
     );

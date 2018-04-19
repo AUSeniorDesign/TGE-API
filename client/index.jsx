@@ -5,6 +5,8 @@ import { render } from "react-dom";
 import { Provider } from "react-redux";
 import { store } from './app/Helpers';
 
+
+
 // load stylesheet
 require("./default.scss");
 

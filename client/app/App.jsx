@@ -23,6 +23,7 @@ export default class App extends React.Component {
           rel="text/javascript"
           href="https://cdnjs.cloudflare.com/ajax/libs/reactstrap/4.8.0/reactstrap.min.js"
         />
+
         <HashRouter history={history}>
           <div>
             <Navigation />

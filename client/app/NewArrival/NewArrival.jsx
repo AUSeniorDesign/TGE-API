@@ -138,7 +138,7 @@ export class NewArrival extends React.Component {
             <p>Drag image files here or click button to upload</p>
           </Dropzone>
           <br />
-          <Button color="primary">Browse Files</Button>
+          <Input type="file" name="file" id="exampleFile"/>
         </Jumbotron>
         <Jumbotron>
           <h1 className="display-4">All Posts</h1>
