@@ -9,19 +9,19 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { userActions } from "../Actions";
-import { connect } from "react-redux";
-import { history } from '../Helpers';
+import { history } from "../Helpers";
 
-class Login extends React.Component {
+export class Login extends React.Component {
   constructor(props) {
     super(props);
 
-    // this.props.dispatch(userActions.logout());
+    userActions.logout();
 
     this.state = {
       username: "",
       password: "",
-      submitted: false
+      submitted: false,
+      error: null
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -40,56 +40,56 @@ class Login extends React.Component {
     const { username, password } = this.state;
     const { dispatch } = this.props;
     if (username && password) {
-      localStorage.setItem("user", JSON.stringify({username}));
-      history.push("/order");
-      //dispatch(userActions.login(username, password));
+      userActions
+        .login(username, password)
+        .then(user => {
+          if (user) {
+            history.push("/order");
+          }
+        })
+        .catch(error => {
+          this.setState({ error: error });
+        });
     }
   }
 
   render() {
-    const { username, password, submitted } = this.state;
+    const { username, password, submitted, error } = this.state;
     return (
       <Jumbotron className="jumbotron login">
         <h1 className="display-4">Login</h1>
-        <InputGroup className="mt-3">
+        <form name="form" onSubmit={this.handleSubmit}>
           <Input
             placeholder="username"
             name="username"
+            autoComplete="username"
             value={username}
             onChange={this.handleChange}
           />
-          <InputGroupAddon addonType="append">@example.com</InputGroupAddon>
-        </InputGroup>
-        <Input
-          placeholder="password"
-          name="password"
-          type="password"
-          value={password}
-          onChange={this.handleChange}
-        />
-        <p className="text-danger" hidden>
-          Incorrect Username / Password.
-        </p>
-        <Button color="primary" onClick={this.handleSubmit}>
-          Login
-        </Button>
-        <br />
-        <br />
-        <p className="mt-3">Don't have an account?</p>
-        <Button tag={Link} to="/signup" color="primary">
-          Create Account
-        </Button>
+          <br />
+          <Input
+            placeholder="password"
+            name="password"
+            type="password"
+            autoComplete="password"
+            value={password}
+            onChange={this.handleChange}
+          />
+          <br />
+          {error && (
+            <p className="text-danger">Incorrect Username / Password.</p>
+          )}
+          <Button color="primary" onClick={this.handleSubmit}>
+            Login
+          </Button>
+          <br />
+          <br />
+          <p className="mt-3">Don't have an account?</p>
+          <Button tag={Link} to="/signup" color="primary">
+            Create Account
+          </Button>
+        </form>
       </Jumbotron>
     );
   }
 }
-
-function mapStateToProps(state) {
-  const { loggingIn } = state.authentication;
-  return {
-    loggingIn
-  };
-}
-
-const connectedLoginPage = connect(mapStateToProps)(Login);
-export { connectedLoginPage as Login };

@@ -14,6 +14,6 @@ module.exports = merge(common, {
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': '"production"'
     }),
-    new CleanWebpackPlugin(['./js/*.js', './js/*.map'], {'allowExternal': true})
+    new CleanWebpackPlugin(['./public/js/*.js', './public/js/*.map'], {'allowExternal': true})
   ],
 });

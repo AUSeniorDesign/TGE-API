@@ -4,6 +4,7 @@
 
 module.exports = (sequelize, DataTypes) => {
     var Item = sequelize.define('Item', {
+      
       name: DataTypes.STRING,
       quantity: DataTypes.DECIMAL(10, 2),
       price: DataTypes.DECIMAL(10, 2),

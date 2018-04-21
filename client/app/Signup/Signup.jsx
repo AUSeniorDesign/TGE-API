@@ -8,15 +8,14 @@ import {
   InputGroupAddon
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import { connect } from "react-redux";
 import { history } from '../Helpers';
 import { userActions } from "../Actions";
 
-class Signup extends React.Component {
+export class Signup extends React.Component {
   constructor(props) {
     super(props);
 
-    //this.props.dispatch(userActions.logout());
+    userActions.logout();
 
     this.state = {
       user: {
@@ -25,7 +24,8 @@ class Signup extends React.Component {
         password: "",
         passwordVerified: ""
       },
-      submitted: false
+      submitted: false,
+      error: null
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -46,14 +46,21 @@ class Signup extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    this.setState({ submitted: true });
-    const { user } = this.state;
-    const { dispatch } = this.props;
-    if (user.name && user.username && user.password) {
-      localStorage.setItem('user', JSON.stringify(user));
-      history.push('/order');
-      //dispatch(userActions.signUp(user));
-    }
+    // this.setState({ submitted: true });
+    // const { user } = this.state;
+    // const { dispatch } = this.props;
+    // if (user.name && user.username && user.password) {
+    //   userActions
+    //     .signup(username, password)
+    //     .then(user => {
+    //       if (user) {
+    //         history.push("/waitForAdmin");
+    //       }
+    //     })
+    //     .catch(error => {
+    //       this.setState({ error: error });
+    //     });
+    // }
   }
 
   render() {
@@ -69,15 +76,12 @@ class Signup extends React.Component {
           onChange={this.handleChange}
         />
         {submitted && !user.name && <ErrorMessage message="Name is required" />}
-        <InputGroup className="mt-3">
-          <Input
+        <Input
             placeholder="username"
             name="username"
             value={user.username}
             onChange={this.handleChange}
           />
-          <InputGroupAddon addonType="append">@example.com</InputGroupAddon>
-        </InputGroup>
         {submitted &&
           !user.username && <div><br/><ErrorMessage message="Username is required" /></div>}
         <Input
@@ -104,7 +108,8 @@ class Signup extends React.Component {
           user.password != user.passwordVerified && (
             <ErrorMessage message="Passwords don't match" />
           )}
-        <Button color="primary" onClick={this.handleSubmit}>
+          {/* <Button color="primary" onClick={this.handleSubmit}> */}
+        <Button tag={Link} to="/waitForAdmin" color="primary">
           Register
         </Button>
         <br />
@@ -117,13 +122,3 @@ class Signup extends React.Component {
     );
   }
 }
-
-function mapStateToProps(state) {
-  const { registering } = state.registration;
-  return {
-    registering
-  };
-}
-
-const connectedSignup = connect(mapStateToProps)(Signup);
-export { connectedSignup as Signup };

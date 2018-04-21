@@ -1,5 +1,5 @@
 import React from "react";
-import { HashRouter, Route } from "react-router-dom";
+import { Router, Route } from "react-router-dom";
 import { PrivateRoute } from "./PrivateRoute.jsx";
 import { Navigation } from "./Components";
 import { Container, Row } from "reactstrap";
@@ -10,6 +10,7 @@ import { User } from "./User";
 import { Order } from "./Order";
 import { Item } from "./Item";
 import { NewArrival } from "./NewArrival";
+import { WaitForAdmin } from "./WaitForAdmin";
 
 export default class App extends React.Component {
   render() {
@@ -23,9 +24,10 @@ export default class App extends React.Component {
           rel="text/javascript"
           href="https://cdnjs.cloudflare.com/ajax/libs/reactstrap/4.8.0/reactstrap.min.js"
         />
-        <HashRouter history={history}>
+        <Router history={history}>
           <div>
             <Navigation />
+
             <Container className="main-container">
               <div>
                 <PrivateRoute exact path="/" component={Order} />
@@ -35,10 +37,12 @@ export default class App extends React.Component {
                 <PrivateRoute path="/order" component={Order} />
                 <PrivateRoute path="/user" component={User} />
                 <PrivateRoute path="/item" component={Item} />
+                <Route path="/waitForAdmin" component={WaitForAdmin} />
               </div>
             </Container>
+
           </div>
-        </HashRouter>
+        </Router>
       </div>
     );
   }

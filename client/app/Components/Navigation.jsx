@@ -15,10 +15,9 @@ import {
 
 import { Link } from "react-router-dom";
 import { userActions } from "../Actions";
-import { connect } from "react-redux";
 import { history } from '../Helpers';
 
-class Navigation extends React.Component {
+export class Navigation extends React.Component {
   constructor(props) {
     super(props);
 
@@ -26,9 +25,10 @@ class Navigation extends React.Component {
 
     this.toggle = this.toggle.bind(this);
     this.state = {
-      isOpen: false
+      isOpen: false,
     };
   }
+
   toggle() {
     this.setState({
       isOpen: !this.state.isOpen
@@ -36,8 +36,7 @@ class Navigation extends React.Component {
   }
 
   logout() {
-    console.log("Logging out..");
-    this.props.dispatch(userActions.logout());
+    userActions.logout();
     history.push('/login');
   }
 
@@ -45,7 +44,7 @@ class Navigation extends React.Component {
     const { props } = this.props;
     return (
       <Navbar color="primary" dark expand="md">
-        <NavbarBrand href="/">The Great Escape</NavbarBrand>
+        <NavbarBrand href="/">The Great Escape Admin Portal</NavbarBrand>
         <NavbarToggler onClick={this.toggle} />
         <Collapse isOpen={this.state.isOpen} navbar>
           <Nav className="ml-auto" navbar>
@@ -77,6 +76,7 @@ class Navigation extends React.Component {
                 eBay Store
               </NavLink>
             </NavItem>
+            { localStorage.getItem("user") && (
             <UncontrolledDropdown nav inNavbar>
               <DropdownToggle nav caret>
                 Settings
@@ -93,17 +93,10 @@ class Navigation extends React.Component {
                 </DropdownItem>
               </DropdownMenu>
             </UncontrolledDropdown>
+            )}
           </Nav>
         </Collapse>
       </Navbar>
     );
   }
 }
-
-function mapStateToProps(state) {
-  //const { registering } = state.registration;
-  return {};
-}
-
-const connectedNavigation = connect(mapStateToProps)(Navigation);
-export { connectedNavigation as Navigation };

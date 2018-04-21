@@ -22,7 +22,7 @@ module.exports = function(app, passport) {
   var router = express.Router();
 
   // Get all new arrival posts, sorted by date
-  router.get("/", passport.isLoggedIn, function(req, res, next) {
+  router.get("/", function(req, res, next) {
     NewArrivalPost.findAll({ order: [["id", "DESC"]] })
       .then(posts => {
         res.status(200).json(posts);
@@ -51,7 +51,7 @@ module.exports = function(app, passport) {
     NewArrivalPost.create({
       description: req.body.description,
       store: req.body.store,
-      images: req.files.map(file => req.headers.host + '/' 
+      image: req.files.map(file => req.headers.host + '/' 
         + file.path.replace('public/', '')).toString()
     })
       .then(post => {
