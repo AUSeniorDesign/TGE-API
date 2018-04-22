@@ -1,122 +1,75 @@
 import React from "react";
-import { Button, Jumbotron } from "reactstrap";
-import Dropzone from "react-dropzone";
-// import {BootstrapTable, TableHeaderColumn} from "react-bootstrap-table-next";
-import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
-import { Link } from "react-router-dom";
-import { userActions } from "../Actions";
-import { connect } from "react-redux";
-import { history } from '../Helpers';
-import { itemAction } from '../Actions';
+import {
+  Jumbotron, Card, CardBody
+} from "reactstrap";
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
-var products = [{
-  id: 1,
-  name: "Product1",
-  price: 120
-}, {
-  id: 2,
-  name: "Product2",
-  price: 80
-}];
-function onCellEdit (row, fieldName, value) {
-  const { data } = this.state;
-  let rowIdx;
-  const targetRow = data.find((prod, i) => {
-    if (prod.id === row.id) {
-      rowIdx = i;
-      return true;
-    }
-    return false;
-  });
-  if (targetRow) {
-    targetRow[fieldName] = value;
-    data[rowIdx] = targetRow;
-    this.setState({ data });
-  }
-}
 
-function onAddRow  (row) {
-  this.products.push(row);
-  this.setState({
-    data: this.products
-  });
-}
-
-function onDeleteRow (row) {
-  this.products = this.products.filter((product) => {
-    return product.id !== row[0];
-  });
-
-  this.setState({
-    data: this.products
-  });
-}
-class RemoteStoreAlternative extends React.Component {
-  constructor(props) {
+export class Item extends React.Component {
+    constructor(props) {
     super(props);
-    this.products = getProducts();
     this.state = {
-      data: this.products
+      loggedIn: true,
+      isAdmin:true,
+      currentState: "not-panic",
+      items: []
     };
+
+    this.onAfterInsertRow = this.onAfterInsertRow.bind(this);
+
+    this.onAfterDeleteRow = this.onAfterDeleteRow.bind(this);
+
+
+    }  
+
+    onAfterInsertRow(row) {
+      let newRowStr = '';
+    
+      for (const prop in row) {
+        newRowStr += prop + ': ' + row[prop] + ' \n';
+      }
+    
+      this.setState({ items: [...this.state.items, row.target] });
+
+    }
+    onAfterDeleteRow(rowKeys) {
+      this.setState({ items: [...this.state.items, row.target] });
+    }
+   
+
+  componentDidMount() {
+    fetch('/items', {
+      headers : { 
+        accept: 'application/json'
+       }
+
+    }) 
+      .then(res => res.json())
+      .then(items => this.setState({ items }));
   }
-
-
-
   render() {
+        let items = this.state.items
+        let options = {
+          afterInsertRow: this.onAfterInsertRow,
+          afterDeleteRow: this.onAfterDeleteRow  // A hook for after droping rows.
+          // A hook for after insert rows
+        };
+        const selectRowProp = {
+          mode: 'radio'
+        };
     return (
-      <RemoteAlternative
-        onCellEdit={ this.onCellEdit }
-        onAddRow={ this.onAddRow }
-        onDeleteRow={ this.onDeleteRow }
-        { ...this.state } />
-    );
-  }
-}
-
-
-class Item extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
-  remote(remoteObj) {
-    // Only cell editing, insert and delete row will be handled by remote store
-    remoteObj.cellEdit = true;
-    remoteObj.insertRow = true;
-    remoteObj.dropRow = true;
-    return remoteObj;
-  }
-
-  render() {
-    const cellEditProp = {
-      mode: 'click'
-    };
-    const selectRow = {
-      mode: 'checkbox',
-      cliclToSelct: true
-    };
-    return (
-      <BootstrapTable data={ this.props.data }
-                      selectRow={ selectRow }
-                      remote={ this.remote }
-                      insertRow deleteRow search pagination
-                      cellEdit={ cellEditProp }
-                      options={ {
-                        onCellEdit: this.props.onCellEdit,
-                        onDeleteRow: this.props.onDeleteRow,
-                        onAddRow: this.props.onAddRow
-                      } }>
-        <TableHeaderColumn dataField='id' isKey={ true }>Product ID</TableHeaderColumn>
-        <TableHeaderColumn dataField='name'>Product Name</TableHeaderColumn>
-        <TableHeaderColumn dataField='price' dataSort>Product Price</TableHeaderColumn>
+      <Jumbotron>
+        <Card>
+          <CardBody>
+      <BootstrapTable data={ items } insertRow={ true } deleteRow={ true } selectRow={ selectRowProp } search={ true } options={ options }>
+          <TableHeaderColumn dataField='id' isKey>Item ID</TableHeaderColumn>
+          <TableHeaderColumn dataField='name'>Item Name</TableHeaderColumn>
+          <TableHeaderColumn dataField='price'>Item Price</TableHeaderColumn>
+          <TableHeaderColumn dataField='quantity'>Item Quantity</TableHeaderColumn>
       </BootstrapTable>
+      </CardBody>
+      </Card>
+      </Jumbotron>
     );
   }
 }
-function mapStateToProps(state) {
-  //const { registering } = state.registration;
-  return {};
-}
-const connectedItemPage = connect(mapStateToProps)(Item);
-export { connectedItemPage as Item };

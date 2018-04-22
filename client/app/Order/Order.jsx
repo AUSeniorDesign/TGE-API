@@ -1,93 +1,77 @@
 import React from "react";
 import {
-  Jumbotron
+  Jumbotron, Card, CardBody
 } from "reactstrap";
-// import BootstrapTable from "react-bootstrap-table-next";
-import Button from "material-ui/Button";
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import { history } from '../Helpers';
 
-const qualityType = {
-  0: 'Pending',
-  1: 'Shipped',
-  2: 'Late'
-};
-
-function enumFormatter(cell, row, enumObject) {
-  return enumObject[cell];
-}
 export class Order extends React.Component {
-  constructor(props) {
+    constructor(props) {
     super(props);
+    this.state = {
+      loggedIn: true,
+      isAdmin :true,
+      currentState: "not-panic",
+      orders: []
+    };
 
-  }
+    this.onAfterInsertRow = this.onAfterInsertRow.bind(this);
 
-  render() {
-    let orders = [
-      {
-        id: 1,
-        name: "Customer name 1",
-        total: 200,
-        status: 0
-      },
-      {
-        id: 2,
-        name: "Customer name 2",
-        total: 30,
-        status: 0
-      },
-      {
-        id: 3,
-        name: "Customer name 3",
-        total: 10,
-        status: 2
-      },
-      {
-        id: 4,
-        name: "Customer name 4",
-        total: 900,
-        status: 1
-      },
-      {
-        id: 5,
-        name: "Customer name 5",
-        total: 500,
-        status: 2
-      },
-    ];
+    this.onAfterDeleteRow = this.onAfterDeleteRow.bind(this);
 
-    let columns = [
-      {
-        dataField: "id",
-        text: "Order ID"
-      },
-      {
-        dataField: "name",
-        text: "Order Name",
-      },
-      {
-        dataField: "total",
-        text: "Order Total"
-      },
-      {
-        dataField: "status",
-        text: "Order Status"
+
+    }  
+
+    onAfterInsertRow(row) {
+      let newRowStr = '';
+    
+      for (const prop in row) {
+        newRowStr += prop + ': ' + row[prop] + ' \n';
       }
-    ];
+    
+      this.setState({ orders: [...this.state.orders, row.target] });
 
+    }
+    onAfterDeleteRow(rowKeys) {
+      this.setState({ orders: [...this.state.orders, row.target] });
+      
+    }
+
+
+  componentDidMount() {
+    fetch('/orders', {
+      headers : { 
+        accept: 'application/json'
+             }
+
+    }) 
+      .then(res => res.json())
+      .then(orders => this.setState({ orders }));
+  }
+  render() {
+        let orders = this.state.orders
+        let options = {
+          afterInsertRow: this.onAfterInsertRow,
+          afterDeleteRow: this.onAfterDeleteRow  // A hook for after droping rows.
+          // A hook for after insert rows
+        };
+        const selectRowProp = {
+          mode: 'radio'
+        };
     return (
-      <div>
-        <Jumbotron>
-          <h1 className="display-4">Orders</h1>
-          <br/>
-          <BootstrapTable data={ orders }>
-        <TableHeaderColumn dataField='id' isKey>Order ID</TableHeaderColumn>
-        <TableHeaderColumn dataField='name'>Order Name</TableHeaderColumn>
-        <TableHeaderColumn dataField='total'>Order Total</TableHeaderColumn>
-        <TableHeaderColumn dataField='status' filterFormatted dataFormat={ enumFormatter } formatExtraData={ qualityType }
-          filter={ { type: 'SelectFilter', options: qualityType } }>Order Status</TableHeaderColumn>
+      <Jumbotron>
+        <Card>
+          <CardBody>
+      <BootstrapTable data={ orders } insertRow={ true } deleteRow={ true } selectRow={ selectRowProp } search={ true } options={ options }>
+          <TableHeaderColumn dataField='id' isKey>Item ID</TableHeaderColumn>
+          <TableHeaderColumn dataField='user'>User Name</TableHeaderColumn>
+          <TableHeaderColumn dataField='address'>Item Price</TableHeaderColumn>
+          <TableHeaderColumn dataField='order_item'>Item Name</TableHeaderColumn>
+          <TableHeaderColumn dataField='status'>Item Quantity</TableHeaderColumn>
       </BootstrapTable>
-        </Jumbotron>
-      </div>
+      </CardBody>
+      </Card>
+      </Jumbotron>
     );
   }
 }
