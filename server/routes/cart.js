@@ -80,11 +80,14 @@ module.exports = function(app, passport, square) {
         })
           .then(cartItems => {
             cartItems.forEach(item => {
-              
               OrderItem.create({
                 ItemId: item.id,
                 OrderId: order.id
               });
+            });
+
+            CartItem.destroy({
+              where: { UserId: req.user.id }
             });
 
             res.status(200).json(order);
