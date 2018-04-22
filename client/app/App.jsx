@@ -1,6 +1,7 @@
 import React from "react";
 import { Router, Route } from "react-router-dom";
 import { PrivateRoute } from "./PrivateRoute.jsx";
+import { AdminRoute } from "./AdminRoute.jsx";
 import { Navigation } from "./Components";
 import { Container, Row } from "reactstrap";
 import { history } from "./Helpers";
@@ -11,6 +12,7 @@ import { Order } from "./Order";
 import { Item } from "./Item";
 import { NewArrival } from "./NewArrival";
 import { WaitForAdmin } from "./WaitForAdmin";
+import { AdminsOnly } from "./AdminsOnly";
 
 export default class App extends React.Component {
   render() {
@@ -35,9 +37,10 @@ export default class App extends React.Component {
                 <Route path="/signup" component={Signup} />
                 <PrivateRoute path="/newarrivals" component={NewArrival} />
                 <PrivateRoute path="/order" component={Order} />
-                <PrivateRoute path="/user" component={User} />
+                <AdminRoute path="/user" component={User} />
                 <PrivateRoute path="/item" component={Item} />
                 <Route path="/waitForAdmin" component={WaitForAdmin} />
+                <Route path="/adminsOnly" component={AdminsOnly} />
               </div>
             </Container>
 

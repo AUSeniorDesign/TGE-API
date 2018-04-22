@@ -55,7 +55,7 @@ module.exports = function(app, passport) {
       }
     })
       .then(function(deletedRecords) {
-        res.status(200).send(deletedRecords + ' deleted');
+        res.status(200).json(deletedRecords + ' deleted');
       })
       .catch(function(error) {
         res.status(500).json(error);

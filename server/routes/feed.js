@@ -51,8 +51,7 @@ module.exports = function(app, passport) {
     NewArrivalPost.create({
       description: req.body.description,
       store: req.body.store,
-      image: req.files.map(file => req.headers.host + '/' 
-        + file.path.replace('public/', '')).toString()
+      image: req.files.map(file => file.path.replace('public/', '')).toString()
     })
       .then(post => {
         res.status(200).json(post);

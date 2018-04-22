@@ -1,5 +1,8 @@
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Roboto Condensed', sans-serif;
+  color: white;
+  background: #007bff;
+  text-align: center;
 };
 
 #new-container {

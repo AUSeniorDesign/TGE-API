@@ -77,7 +77,7 @@ export class Login extends React.Component {
           />
           <br />
           {error && (
-            <p className="text-danger">Incorrect Username / Password.</p>
+            <p className="text-danger">Login Failed.</p>
           )}
           <Button color="primary" onClick={this.handleSubmit}>
             Login

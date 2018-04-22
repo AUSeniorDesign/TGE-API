@@ -31,7 +31,7 @@ function loggedIn() {
     })
     .then(user => {
       if (user && (user.type == 'admin' || user.type == 'employee')) {
-        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem('user', JSON.stringify(user));
       }
       return user.type == 'admin' || user.type == 'employee'
     });
@@ -54,7 +54,7 @@ function login(username, password) {
     })
     .then(user => {
       if (user && (user.type == 'admin' || user.type == 'employee')) {
-        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem('user', JSON.stringify(user));
       }
       return user;
     });

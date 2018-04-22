@@ -7,6 +7,7 @@ const User = require("../models").User;
 const Item = require("../models").Item;
 const CartItem = require("../models").CartItem;
 const Order = require("../models").Order;
+const Address = require("../models").Address;
 const Facebook = require("../models").Facebook;
 const Credential = require("../models").Credential;
 
@@ -130,7 +131,7 @@ module.exports = function(app, passport) {
    * their user staus to 'admin', 'employee', or down to 'customer'.
    */
   router.get("/", passport.isAdmin, function(req, res, next) {
-    User.findAll({ include: [Credential, Facebook, Address] })
+    User.findAll({ include: [Credential, Facebook, { model: Address, as: 'savedAddress' }] })
       .then(users => {
         res.status(200).json(users);
       })

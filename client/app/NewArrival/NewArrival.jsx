@@ -4,89 +4,81 @@ import {
   Button,
   InputGroup,
   Input,
-  InputGroupAddon
+  InputGroupAddon,
+  Media
 } from "reactstrap";
 import Dropzone from "react-dropzone";
 import BootstrapTable from "react-bootstrap-table-next";
+import { newArrivalActions } from "../Actions";
+
 
 export class NewArrival extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = {
-      post: {
-        store: ""
+      newPost: {
+        description: "",
+        store: "",
+        image: null
       },
       submitted: false,
-      files: [],
       dropzone: null
     };
 
     this.handleChange = this.handleChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
+    this.createPost = this.createPost.bind(this);
   }
 
   handleChange(event) {
     const { name, value } = event.target;
-    const { post } = this.state;
+    const { newPost } = this.state;
+    let newPostCopy = JSON.parse(JSON.stringify(this.state.newPost));
+    newPostCopy[name] = value;
     this.setState({
-      post: {
-        ...post,
-        [name]: value
-      }
+      newPost: newPostCopy
     });
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-
-    this.setState({ submitted: true });
-    const { post } = this.state;
-    const { dispatch } = this.props;
-    if (post.store) {
-      // localStorage.setItem('user', JSON.stringify(user));
-      // history.push('/order');
-      //dispatch(userActions.signUp(user));
-      alert("Post Created!");
-    }
   }
 
   onDrop(files) {
+    const { newPost } = this.state;
     this.setState({
-      files
+      newPost: {
+        ...newPost,
+        image: files[0]
+      }
     });
+    console.log(this.state);
   }
 
-  render() {
-    let { post, submitted, files, dropzone } = this.state;
+  createPost() {
+    //this.setState({ submitted: true });
+    console.log(this.state);
 
-    let posts = [
-      {
-        id: 1,
-        name: "Post description 1",
-        store: "Nashville"
-      },
-      {
-        id: 2,
-        name: "Post description 2",
-        store: "Nashville"
-      },
-      {
-        id: 3,
-        name: "Post description 3",
-        store: "Nashville"
-      },
-      {
-        id: 4,
-        name: "Post description 4",
-        store: "Nashville"
-      },
-      {
-        id: 5,
-        name: "Post description 5",
-        store: "Nashville"
-      }
-    ];
+    const { newPost } = this.state;
+    const { dispatch } = this.props;
+ 
+    if (newPost.store && newPost.description && newPost.image) {
+      newArrivalActions
+        .create(newPost.store, newPost.description, newPost.file)
+        .then(post => {
+          // reload
+          alert("Post Created!");
+
+        })
+        .catch(error => {
+          this.setState({ error: error });
+        });
+
+    }
+  }
+
+  deleteImage() {}
+
+  render() {
+    let { newPost, submitted, dropzone } = this.state;
+
+    let posts = [];
 
     let columns = [
       {
@@ -106,39 +98,72 @@ export class NewArrival extends React.Component {
     return (
       <div>
         <Jumbotron>
-          <h1 className="display-4">New Product Post</h1>
+          <h1 className="display-4">New Arrival Post</h1>
           <br />
           <h3 className="display-6">Description</h3>
           <Input
             placeholder="description"
             name="description"
             type="textarea"
-            value={post.description}
+            value={newPost.description}
             onChange={this.handleChange}
           />
+
+          {submitted &&
+            !newPost.description && <p className="text-danger">Description required.</p>}
           <br />
+
           <Input
             placeholder="store"
             name="store"
-            value={post.store}
+            value={newPost.store}
             onChange={this.handleChange}
           />
           {submitted &&
-            !post.store && <ErrorMessage message="Store is required" />}
+            !newPost.store && <p className="text-danger">Store required.</p>}
           <br />
 
-          <h3 className="display-6">Pictures</h3>
-          <Dropzone
-            className="dropzone"
-            ref={node => {
-              dropzone = node;
-            }}
-            onDrop={this.onDrop.bind(this)}
-          >
-            <p>Drag image files here or click button to upload</p>
+          <h3 className="display-6">Picture</h3>
+
+          {!submitted &&
+            newPost.image && (
+              <div>
+              <Button
+                color="muted"
+                size="sm"
+                onClick={() => {
+                  dropzone.open();
+                }}>
+                Change Image
+              </Button>
+              <br/>
+              <img style={{ height: '200px', margin: '10px 0' }} src={newPost.image.preview} alt="Image Upload" />
+              </div>
+            )}
+
+          {!newPost.image ?
+          <Dropzone className="dropzone" ref={node => { dropzone = node; }}onDrop={this.onDrop.bind(this)}>
+            <p>Drag image file or click here to browse files</p>
           </Dropzone>
+          :
+          <Dropzone hidden className="dropzone" ref={node => { dropzone = node; }}onDrop={this.onDrop.bind(this)}>
+            <p>Drag image file or click here to browse files</p>
+          </Dropzone>
+          }
+
+          {submitted &&
+            !newPost.image && <p className="text-danger">Image required.</p>}
+
           <br />
-          <Button color="primary">Browse Files</Button>
+
+          <Button
+            color="primary"
+            onClick={() => {
+              this.createPost();
+            }}
+          >
+            Create Post
+          </Button>
         </Jumbotron>
         <Jumbotron>
           <h1 className="display-4">All Posts</h1>

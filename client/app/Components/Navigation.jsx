@@ -55,7 +55,7 @@ export class Navigation extends React.Component {
             </NavItem>
             <NavItem>
               <NavLink tag={Link} to="/newarrivals">
-                New Item Posts
+                New Arrival Posts
               </NavLink>
             </NavItem>
             <NavItem>
