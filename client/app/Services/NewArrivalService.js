@@ -5,7 +5,7 @@ export const newArrivalService = {
   remove
 };
 
-const base_url = "http://localhost:3000"
+const base_url = "http://tge.mybluemix.net"
 
 function create(store, description, file) {
   let formData = new FormData();
