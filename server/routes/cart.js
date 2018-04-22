@@ -55,12 +55,54 @@ module.exports = function(app, passport) {
       }
     })
       .then(function(deletedRecords) {
-        res.status(200).json(deletedRecords + ' deleted');
+        res.status(200).json(deletedRecords + " deleted");
       })
       .catch(function(error) {
         res.status(500).json(error);
       });
   });
 
+  // Checkout w/ Sqaure, convert to Order
+  router.post("/checkout", passport.isLoggedIn, function(req, res, next) {
+    let cardNonce = req.body.nonce;
+
+    const location = "CBASEDnEqxa5dSbQs3ak_XJtqiwgAQ";
+    // Sandbox access token TODO: add this as env variable when we do actually go to production
+    const accessToken = "sandbox-sq0atb-AIVmTputqFCPd4pTVProVQ";
+
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`
+      },
+      body: JSON.stringify({
+        card_nonce: cardNonce,
+        amount_money: {
+          amount: 100,
+          currency: "USD"
+        },
+        idempotency_key: str(uuidv4())
+      })
+    };
+    console.log(requestOptions);
+
+    return fetch(
+      `https://connect.squareup.com/v2/locations/${location}/transactions`,
+      requestOptions
+    ).then(response => {
+      res.status(200).json(response);
+    });
+    
+  });
+
   app.use("/cart", router);
 };
+
+function uuidv4() {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
+    var r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
