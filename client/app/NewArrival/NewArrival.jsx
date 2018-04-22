@@ -66,10 +66,10 @@ export class NewArrival extends React.Component {
           notify.show("Post Published!", "success", 5000);
         })
         .catch(error => {
+          console.log(error);
           notify.show("Error Creating Post.", "error", 5000);
           this.setState({ error: error });
         });
-
     }
   }
 

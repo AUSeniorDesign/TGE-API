@@ -82,7 +82,7 @@ export class Navigation extends React.Component {
                 Settings
               </DropdownToggle>
               <DropdownMenu right>
-                <DropdownItem>Account</DropdownItem>
+                <DropdownItem>{JSON.parse(localStorage.user).Credential.email}</DropdownItem>
                 <DropdownItem divider />
                 <DropdownItem
                   onClick={() => {

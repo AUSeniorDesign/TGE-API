@@ -10,6 +10,7 @@ export const userService = {
 };
 
 const base_url = "http://tge.mybluemix.net"
+// const base_url = "http://0.0.0.0:3000"
 
 // Quick function to check if user is currently logged in 
 // and is of correct user type to access the Admin Portal

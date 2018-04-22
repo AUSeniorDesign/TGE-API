@@ -6,13 +6,15 @@ export const newArrivalService = {
 };
 
 const base_url = "http://tge.mybluemix.net"
+// const base_url = "http://0.0.0.0:3000"
 
 function create(store, description, file) {
   let formData = new FormData();
   formData.append('store', store);
   formData.append('description', description);
-  formData.append('photos', file);
+  formData.append('image', file);
   console.log(formData);
+
   const requestOptions = {
     method: "POST",
     credentials: 'include',
@@ -21,9 +23,9 @@ function create(store, description, file) {
 
   return fetch(`${base_url}/feed`, requestOptions)
     .then(response => {
-      // Check if user logged in
+      
       if (!response.ok) {
-        // Not logged in, 
+        console.log(response.json());
         return Promise.reject(response.statusText);
       }
 

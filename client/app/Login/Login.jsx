@@ -43,6 +43,7 @@ export class Login extends React.Component {
       userActions
         .login(username, password)
         .then(user => {
+          console.log(user);
           if (user) {
             history.push("/order");
           }

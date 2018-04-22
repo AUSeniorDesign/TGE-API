@@ -47,7 +47,7 @@ module.exports = function(app, passport) {
    * With the image in a multipart form data called 'image'
    *
    */
-  router.post("/", passport.isEmployee, upload.single('avatar'), function(req, res, next) {
+  router.post("/", passport.isEmployee, upload.single('image'), function(req, res, next) {
     NewArrivalPost.create({
       description: req.body.description,
       store: req.body.store,
