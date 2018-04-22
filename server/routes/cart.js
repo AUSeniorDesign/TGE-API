@@ -6,11 +6,12 @@ const express = require("express");
 const User = require("../models").User;
 const Item = require("../models").Item;
 const CartItem = require("../models").CartItem;
+const OrderItem = require("../models").OrderItem;
 const Order = require("../models").Order;
 const Facebook = require("../models").Facebook;
 const Credential = require("../models").Credential;
 
-module.exports = function(app, passport) {
+module.exports = function(app, passport, square) {
   var router = express.Router();
 
   // Get Shopping Cart
@@ -63,51 +64,39 @@ module.exports = function(app, passport) {
   });
 
   // Checkout w/ Sqaure, convert to Order
-  router.post("/checkout", passport.isLoggedIn, function(req, res, next) {
-      CartItem.findAll({
-        where: { UserId: req.user.id },
-        include: [Item]
-      }).then(cartItems => {
-        res.status(200).json(cartItems);
+  //router.post("/checkout/square", passport.isLoggedIn, square.checkout function(req, res, next) {
+  router.post("/checkout/square", passport.isLoggedIn, function(
+    req,
+    res,
+    next
+  ) {
+    Order.create({
+      UserId: req.user.id
+    })
+      .then(order => {
+        CartItem.findAll({
+          where: { UserId: req.user.id },
+          include: [Item]
+        })
+          .then(cartItems => {
+            cartItems.forEach(item => {
+              
+              OrderItem.create({
+                ItemId: item.id,
+                OrderId: order.id
+              });
+            });
 
-        let cardNonce = req.body.nonce;
-        const tax = 0.0; // TODO: Add Tax Logic
-        let total = cartItems.reduce((a, b) => a.Item.price + b.Item.price, tax);
-
-        const location = "CBASEDnEqxa5dSbQs3ak_XJtqiwgAQ";
-        // Sandbox access token TODO: add this as env variable when we do actually go to production
-        const accessToken = "sandbox-sq0atb-AIVmTputqFCPd4pTVProVQ";
-
-        const requestOptions = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${accessToken}`
-          },
-          body: JSON.stringify({
-            card_nonce: cardNonce,
-            amount_money: {
-              amount: total,
-              currency: "USD"
-            },
-            idempotency_key: str(uuidv4())
+            res.status(200).json(order);
           })
-        };
-        console.log(requestOptions);
-
-        return fetch(
-          `https://connect.squareup.com/v2/locations/${location}/transactions`,
-          requestOptions
-        ).then(response => {
-          res.status(200).json(response);
-        });
-
-
-      }).catch(function(error) {
+          .catch(function(error) {
+            res.status(500).json(error);
+          });
+      })
+      .catch(error => {
         res.status(500).json(error);
       });
-    });
-    
+  });
 
   app.use("/cart", router);
 };

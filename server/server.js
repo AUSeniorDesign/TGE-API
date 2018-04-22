@@ -11,6 +11,7 @@ const logger = log4js.getLogger(appName);
 const bodyParser = require("body-parser");
 const serviceManager = require("./services/service-manager");
 const cors = require('cors');
+const square = require('./middleware/square.js');
 
 const app = express();
 app.use(require("morgan")("combined"));
@@ -43,7 +44,7 @@ app.use(passport.session());
 
 require("./services/index")(app);
 require("./middleware/passport")(passport);
-require("./routes/index")(app, passport);
+require("./routes/index")(app, passport, square);
 
 const port = process.env.PORT || localConfig.port;
 

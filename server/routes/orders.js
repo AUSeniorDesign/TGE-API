@@ -43,7 +43,10 @@ module.exports = function (app, passport) {
     // Get All Orders
     router.get('/', passport.isEmployee, function (req, res, next) {
         Order.findAll({
-            include: [OrderItem, User, Address]
+            include: [OrderItem, 
+                User, 
+                { model: Address, as: 'billingAddress' }, 
+                { model: Address, as: 'shippingAddress' },]
           })
             .then(orders => {
                 res.status(200).json(orders);
@@ -79,6 +82,20 @@ module.exports = function (app, passport) {
         })
             .then(updatedRecords => {
                 res.status(200).json(updatedRecords);
+            })
+            .catch(error => {
+                res.status(500).json(error);
+            });
+    });
+
+    router.delete('/:id', passport.isEmployee, function (req, res, next) {
+        Order.destroy({
+            where: {
+                id: req.params.id
+            }
+        })
+            .then(deleted => {
+                res.status(200).json(deleted);
             })
             .catch(error => {
                 res.status(500).json(error);
