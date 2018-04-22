@@ -8,7 +8,7 @@ import {
   InputGroupAddon
 } from "reactstrap";
 import { Link } from "react-router-dom";
-import { history } from '../Helpers';
+import { history } from "../Helpers";
 import { userActions } from "../Actions";
 
 export class Signup extends React.Component {
@@ -19,7 +19,6 @@ export class Signup extends React.Component {
 
     this.state = {
       user: {
-        name: "",
         username: "",
         password: "",
         passwordVerified: ""
@@ -46,21 +45,21 @@ export class Signup extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
 
-    // this.setState({ submitted: true });
-    // const { user } = this.state;
-    // const { dispatch } = this.props;
-    // if (user.name && user.username && user.password) {
-    //   userActions
-    //     .signup(username, password)
-    //     .then(user => {
-    //       if (user) {
-    //         history.push("/waitForAdmin");
-    //       }
-    //     })
-    //     .catch(error => {
-    //       this.setState({ error: error });
-    //     });
-    // }
+    this.setState({ submitted: true });
+    const { user } = this.state;
+    const { dispatch } = this.props;
+    if (user.username && user.password) {
+      userActions
+        .signUp(user)
+        .then(user => {
+          if (user) {
+            history.push("/waitForAdmin");
+          }
+        })
+        .catch(error => {
+          this.setState({ error: error });
+        });
+    }
   }
 
   render() {
@@ -69,47 +68,46 @@ export class Signup extends React.Component {
     return (
       <Jumbotron className="login">
         <h1 className="display-4">New User</h1>
-        <Input
-          placeholder="name"
-          name="name"
-          value={user.name}
-          onChange={this.handleChange}
-        />
-        {submitted && !user.name && <ErrorMessage message="Name is required" />}
-        <Input
+        <form>
+          <Input
             placeholder="username"
             name="username"
             value={user.username}
             onChange={this.handleChange}
           />
-        {submitted &&
-          !user.username && <div><br/><ErrorMessage message="Username is required" /></div>}
-        <Input
-          placeholder="password"
-          name="password"
-          type="password"
-          value={user.password}
-          onChange={this.handleChange}
-        />
-        {submitted &&
-          !user.password && <ErrorMessage message="Password is required" />}
-        <Input
-          placeholder="re-enter password"
-          name="passwordVerified"
-          type="password"
-          value={user.passwordVerified}
-          onChange={this.handleChange}
-        />
-        {submitted && user.password &&
-          !user.passwordVerified && (
-            <ErrorMessage message="Both Passwords required" />
-          )}
-        {submitted && user.passwordVerified &&
-          user.password != user.passwordVerified && (
-            <ErrorMessage message="Passwords don't match" />
-          )}
-          {/* <Button color="primary" onClick={this.handleSubmit}> */}
-        <Button tag={Link} to="/waitForAdmin" color="primary">
+          {submitted &&
+            !user.username && <ErrorMessage message="Username is required" />}
+            <br/>
+          <Input
+            placeholder="password"
+            name="password"
+            type="password"
+            value={user.password}
+            onChange={this.handleChange}
+          />
+          {submitted &&
+            !user.password && <ErrorMessage message="Password is required" />}
+            <br/>
+          <Input
+            placeholder="re-enter password"
+            name="passwordVerified"
+            type="password"
+            value={user.passwordVerified}
+            onChange={this.handleChange}
+          />
+          {submitted &&
+            user.password &&
+            !user.passwordVerified && (
+              <ErrorMessage message="Both Passwords required" />
+            )}
+          {submitted &&
+            user.passwordVerified &&
+            user.password != user.passwordVerified && (
+              <ErrorMessage message="Passwords don't match" />
+            )}
+            <br/>
+        </form>
+        <Button color="primary" onClick={this.handleSubmit}>
           Register
         </Button>
         <br />

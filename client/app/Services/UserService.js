@@ -113,7 +113,7 @@ function signUp(user) {
     body: JSON.stringify(user),
   };
 
-  return fetch(`${base_url}/users/signup/`, requestOptions).then(handleResponse);
+  return fetch(`${base_url}/users/signup`, requestOptions).then(handleResponse);
 }
 
 function update(user) {

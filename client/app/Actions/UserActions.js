@@ -45,9 +45,16 @@ function signUp(user) {
 }
 
 function getAll() {
-  userService
-    .getAll()
-    .then(users => dispatch(success(users)), error => dispatch(failure(error)));
+  return new Promise((resolve, reject) => {
+    userService.getAll().then(
+      users => {
+        resolve(users);
+      },
+      error => {
+        reject(error);
+      }
+    );
+  });
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript

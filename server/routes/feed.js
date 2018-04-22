@@ -71,12 +71,6 @@ module.exports = function(app, passport) {
     })
       .then(updatedRecords => {
         res.status(200).json(updatedRecords);
-
-        // TODO: Update new image photos
-
-        // TODO: Cross reference images field after upload and delete non-present images from 
-        // uploads folder
-
       })
       .catch(error => {
         res.status(500).json(error);
