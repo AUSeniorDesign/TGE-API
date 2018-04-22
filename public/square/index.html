@@ -7,32 +7,33 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <!-- link to the SqPaymentForm library -->
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet" />
-    <link href="../css/default.css" rel="stylesheet" />
-    <script type="text/javascript" src="https://js.squareup.com/v2/paymentform?v=1.0">
-    </script>
+        <link href="https://fonts.googleapis.com/css?family=Roboto+Condensed" rel="stylesheet" />
+        <link href = "../css/default.css" rel="stylesheet" /> 
+        <script type="text/javascript" src="https://js.squareup.com/v2/paymentform?v=1.0">
+        </script>
 
-    <!-- link to the local SqPaymentForm initialization -->
-    <script type="text/javascript" src="path/to/sqpaymentform.js">
-    </script>
+        <!-- link to the local SqPaymentForm initialization -->
+        <script type="text/javascript" src="path/to/sqpaymentform.js">
+        </script>
 
-    <script>
-        // Set the application ID
-        var applicationId = "sandbox-sq0idp-JNrrXaPZ1ADkGz2dU82xXQ";
+        <script>
+            // Set the application ID
+            var applicationId = "sandbox-sq0idp-JNrrXaPZ1ADkGz2dU82xXQ";
 
-        // Set the location ID
-        var locationId = "CBASEDnEqxa5dSbQs3ak_XJtqiwgAQ";
+            // Set the location ID
+            var locationId = "CBASEDnEqxa5dSbQs3ak_XJtqiwgAQ";
 
-        /*
-        * function: requestCardNonce
-        *
-        * requestCardNonce is triggered when the "Pay with credit card" button is
-        * clicked
-        *
-        * Modifying this function is not required, but can be customized if you
-        * wish to take additional action when the form button is clicked.
-        */
-        function requestCardNonce(event) {
+            /*
+            * function: requestCardNonce
+            *
+            * requestCardNonce is triggered when the "Pay with credit card" button is
+            * clicked
+            *
+            * Modifying this function is not required, but can be customized if you
+            * wish to take additional action when the form button is clicked.
+            */
+            function requestCardNonce(event) {
+            alert('Order Placed!') // Remove this when done with presentation
 
             // Don't submit the form until SqPaymentForm returns with a nonce
             event.preventDefault();
@@ -155,7 +156,9 @@
                     // POST the nonce form to the payment processing page
                     document.getElementById('nonce-form').submit();
 
+
                 },
+
 
                 /*
                 * callback function: unsupportedBrowserDetected
@@ -313,7 +316,13 @@
             vertical-align: top;
             font-weight: bold;
         }
-    </style>
+
+        body {
+            background-color:rgb(70, 130, 180);
+        }
+        
+
+        </style>
 </head>
 
 <body>
