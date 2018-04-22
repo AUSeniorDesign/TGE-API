@@ -44,14 +44,14 @@ module.exports = function(app, passport) {
    *          file: file data
    *  ]
    * 
-   * With any and all images in a multipart form data array called 'photos'
+   * With the image in a multipart form data called 'image'
    *
    */
-  router.post("/", passport.isEmployee, upload.array('photos'), function(req, res, next) {
+  router.post("/", passport.isEmployee, upload.single('avatar'), function(req, res, next) {
     NewArrivalPost.create({
       description: req.body.description,
       store: req.body.store,
-      image: req.files.map(file => file.path.replace('public/', '')).toString()
+      image: req.file.path.replace('public/', '').toString()
     })
       .then(post => {
         res.status(200).json(post);

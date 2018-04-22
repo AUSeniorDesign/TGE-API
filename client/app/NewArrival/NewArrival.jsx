@@ -54,8 +54,7 @@ export class NewArrival extends React.Component {
   }
 
   createPost() {
-    //this.setState({ submitted: true });
-    console.log(this.state);
+    this.setState({ submitted: true });
 
     const { newPost } = this.state;
     const { dispatch } = this.props;

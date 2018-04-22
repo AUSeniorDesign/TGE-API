@@ -55,55 +55,55 @@ module.exports.updateInventoryQuantity = function(req, res, next) {
  * https://developer.ebay.com/devzone/guides/ebayfeatures/Notifications/Notif-ItemSold.html
  */
 
-module.exports.itemSoldListener = function(req, res, next) {
-  var soap = req.body.OrderItems.map(item => {
-    return {
-      sku: item.sku,
-      shipToLocationAvailability: {
-        quantity: item.quantity
-      }
-    };
-  });
-  var myService = {
-    MyService: {
-      MyPort: {
-        MyFunction: function(args) {
-          return {
-            name: args.name
-          };
-        },
+// module.exports.itemSoldListener = function(req, res, next) {
+//   var soap = req.body.OrderItems.map(item => {
+//     return {
+//       sku: item.sku,
+//       shipToLocationAvailability: {
+//         quantity: item.quantity
+//       }
+//     };
+//   });
+//   var myService = {
+//     MyService: {
+//       MyPort: {
+//         MyFunction: function(args) {
+//           return {
+//             name: args.name
+//           };
+//         },
 
-        // This is how to define an asynchronous function.
-        MyAsyncFunction: function(args, callback) {
-          // do some work
-          callback({
-            name: args.name
-          });
-        },
+//         // This is how to define an asynchronous function.
+//         MyAsyncFunction: function(args, callback) {
+//           // do some work
+//           callback({
+//             name: args.name
+//           });
+//         },
 
-        // This is how to receive incoming headers
-        HeadersAwareFunction: function(args, cb, headers) {
-          return {
-            name: headers.Token
-          };
-        },
+//         // This is how to receive incoming headers
+//         HeadersAwareFunction: function(args, cb, headers) {
+//           return {
+//             name: headers.Token
+//           };
+//         },
 
-        // You can also inspect the original `req`
-        reallyDetailedFunction: function(args, cb, headers, req) {
-          console.log(
-            "SOAP `reallyDetailedFunction` request from " +
-              req.connection.remoteAddress
-          );
-          return {
-            name: headers.Token
-          };
-        }
-      }
-    }
-  };
-};
+//         // You can also inspect the original `req`
+//         reallyDetailedFunction: function(args, cb, headers, req) {
+//           console.log(
+//             "SOAP `reallyDetailedFunction` request from " +
+//               req.connection.remoteAddress
+//           );
+//           return {
+//             name: headers.Token
+//           };
+//         }
+//       }
+//     }
+//   };
+// };
 
-var xml = require("fs").readFileSync("myservice.wsdl", "utf8");
+// var xml = require("fs").readFileSync("myservice.wsdl", "utf8");
 
 //http server example
 // var server = http.createServer(function(request, response) {
