@@ -33,6 +33,7 @@
             */
             function requestCardNonce(event) {
 
+
             // Don't submit the form until SqPaymentForm returns with a nonce
             event.preventDefault();
 
@@ -146,7 +147,29 @@
                     return;
                 }
 
-                alert('Nonce received: ' + nonce); /* FOR TESTING ONLY */
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", 'tge.mybluemix.net/checkout', true);
+
+                //Send the proper header information along with the request
+                xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+                xhr.onreadystatechange = function() {//Call a function when the state changes.
+                    if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+                        // Request finished. Do processing here.
+                        alert('Order Completed!')
+                    } else {
+                        alert('Error Processing Order')
+                    }
+                }
+
+
+                //alert('Order Placed!')
+
+
+
+
+
+                //alert('Nonce received: ' + nonce); /* FOR TESTING ONLY */
 
                 // Assign the nonce value to the hidden form field
                 document.getElementById('card-nonce').value = nonce;
@@ -154,7 +177,9 @@
                 // POST the nonce form to the payment processing page
                 document.getElementById('nonce-form').submit();
 
+
                 },
+
 
                 /*
                 * callback function: unsupportedBrowserDetected
@@ -305,6 +330,10 @@
           text-align: center;
           vertical-align: top;
           font-weight: bold;
+        }
+
+        body {
+            background-color:rgb(70, 130, 180);
         }
         
 
