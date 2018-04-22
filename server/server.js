@@ -10,6 +10,7 @@ const path = require("path");
 const logger = log4js.getLogger(appName);
 const bodyParser = require("body-parser");
 const serviceManager = require("./services/service-manager");
+const cors = require('cors');
 
 const app = express();
 app.use(require("morgan")("combined"));
@@ -17,11 +18,7 @@ app.use(require("cookie-parser")());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-app.use(function(req, res, next) {
-  res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-  next();
-});
+app.use(cors({credentials: true, origin: true}));
 
 // Configure app models (see models/index.js)
 app.set("models", require("./models"));

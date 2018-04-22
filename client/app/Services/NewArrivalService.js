@@ -7,15 +7,19 @@ export const newArrivalService = {
 
 const base_url = "http://localhost:3000"
 
-// Quick function to check if user is currently logged in 
-// and is of correct user type to access the Admin Portal
-function create() {
+function create(store, description, file) {
+  let formData = new FormData();
+  formData.append('store', store);
+  formData.append('description', description);
+  formData.append('photos', file);
+  console.log(formData);
   const requestOptions = {
-    method: "GET",
-    headers: { "Content-Type": "application/json" }
+    method: "POST",
+    credentials: 'include',
+    body: formData
   };
 
-  return fetch(`${base_url}/users/me`, requestOptions)
+  return fetch(`${base_url}/feed`, requestOptions)
     .then(response => {
       // Check if user logged in
       if (!response.ok) {
@@ -23,93 +27,28 @@ function create() {
         return Promise.reject(response.statusText);
       }
 
-      return false;
-    })
-    .then(user => {
-      if (user && (user.type == 'admin' || user.type == 'employee')) {
-        localStorage.setItem('user', JSON.stringify(user));
-      }
-      return user.type == 'admin' || user.type == 'employee'
-    });
-}
-
-function login(username, password) {
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ username, password })
-  };
-
-  return fetch(`${base_url}/users/login`, requestOptions)
-    .then(response => {
-      if (!response.ok) {
-        return Promise.reject(response.statusText);
-      }
-
       return response.json();
     })
-    .then(user => {
-      if (user && (user.type == 'admin' || user.type == 'employee')) {
-        localStorage.setItem('user', JSON.stringify(user));
-        console.log(JSON.parse(localStorage.user).type);
-      }
-      return user;
-    });
-}
-
-function logout() {
-  const requestOptions = {
-    method: "GET",
-    headers: { "Content-Type": "application/json" }
-  };
-
-  return fetch(`${base_url}/users/logout`, requestOptions)
-    .then(response => {
-      if (!response.ok) {
-        return Promise.reject(response.statusText);
-      }
-
-      return response;
-    })
-    .then(result => {
-      localStorage.removeItem("user");
-
-      return result;
+    .then(post => {
+      return post;
     });
 }
 
 function getAll() {
   const requestOptions = {
     method: "GET",
-    headers: authHeader()
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
   };
 
   return fetch(`${base_url}/users/`, requestOptions).then(handleResponse);
 }
 
-function getById(id) {
-  const requestOptions = {
-    method: "GET",
-    headers: authHeader()
-  };
-
-  return fetch(`${base_url}/users/` + _id, requestOptions).then(handleResponse);
-}
-
-function signUp(user) {
-  const requestOptions = {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user)
-  };
-
-  return fetch(`${base_url}/users/signup/`, requestOptions).then(handleResponse);
-}
-
 function update(user) {
   const requestOptions = {
     method: "PUT",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
     body: JSON.stringify(user)
   };
 
@@ -120,7 +59,8 @@ function update(user) {
 function remove(id) {
   const requestOptions = {
     method: "DELETE",
-    headers: authHeader()
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
   };
 
   return fetch(`${base_url}/users/` + id, requestOptions).then(handleResponse);

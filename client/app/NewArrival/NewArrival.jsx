@@ -9,7 +9,9 @@ import {
 } from "reactstrap";
 import Dropzone from "react-dropzone";
 import BootstrapTable from "react-bootstrap-table-next";
+import Notifications, {notify} from 'react-notify-toast';
 import { newArrivalActions } from "../Actions";
+
 
 
 export class NewArrival extends React.Component {
@@ -60,13 +62,12 @@ export class NewArrival extends React.Component {
  
     if (newPost.store && newPost.description && newPost.image) {
       newArrivalActions
-        .create(newPost.store, newPost.description, newPost.file)
+        .create(newPost.store, newPost.description, newPost.image)
         .then(post => {
-          // reload
-          alert("Post Created!");
-
+          notify.show("Post Published!", "success", 5000);
         })
         .catch(error => {
+          notify.show("Error Creating Post.", "error", 5000);
           this.setState({ error: error });
         });
 
@@ -97,6 +98,7 @@ export class NewArrival extends React.Component {
 
     return (
       <div>
+        <Notifications />
         <Jumbotron>
           <h1 className="display-4">New Arrival Post</h1>
           <br />
@@ -142,7 +144,7 @@ export class NewArrival extends React.Component {
             )}
 
           {!newPost.image ?
-          <Dropzone className="dropzone" ref={node => { dropzone = node; }}onDrop={this.onDrop.bind(this)}>
+          <Dropzone className="dropzone" multiple={false} ref={node => { dropzone = node; }}onDrop={this.onDrop.bind(this)}>
             <p>Drag image file or click here to browse files</p>
           </Dropzone>
           :
@@ -162,7 +164,7 @@ export class NewArrival extends React.Component {
               this.createPost();
             }}
           >
-            Create Post
+            Publish Post
           </Button>
         </Jumbotron>
         <Jumbotron>

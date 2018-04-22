@@ -16,7 +16,8 @@ const base_url = "http://localhost:3000"
 function loggedIn() {
   const requestOptions = {
     method: "GET",
-    headers: { "Content-Type": "application/json" }
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
   };
 
   return fetch(`${base_url}/users/me`, requestOptions)
@@ -41,8 +42,10 @@ function login(username, password) {
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
+    credentials: 'include',
     body: JSON.stringify({ username, password })
   };
+  console.log(requestOptions);
 
   return fetch(`${base_url}/users/login`, requestOptions)
     .then(response => {
@@ -63,7 +66,8 @@ function login(username, password) {
 function logout() {
   const requestOptions = {
     method: "GET",
-    headers: { "Content-Type": "application/json" }
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
   };
 
   return fetch(`${base_url}/users/logout`, requestOptions)
@@ -84,7 +88,8 @@ function logout() {
 function getAll() {
   const requestOptions = {
     method: "GET",
-    headers: authHeader()
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
   };
 
   return fetch(`${base_url}/users/`, requestOptions).then(handleResponse);
@@ -93,7 +98,8 @@ function getAll() {
 function getById(id) {
   const requestOptions = {
     method: "GET",
-    headers: authHeader()
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
   };
 
   return fetch(`${base_url}/users/` + _id, requestOptions).then(handleResponse);
@@ -103,7 +109,8 @@ function signUp(user) {
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(user)
+    credentials: 'include',
+    body: JSON.stringify(user),
   };
 
   return fetch(`${base_url}/users/signup/`, requestOptions).then(handleResponse);
@@ -112,8 +119,9 @@ function signUp(user) {
 function update(user) {
   const requestOptions = {
     method: "PUT",
-    headers: { ...authHeader(), "Content-Type": "application/json" },
-    body: JSON.stringify(user)
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
+    body: JSON.stringify(user),
   };
 
   return fetch(`${base_url}/users/` + user.id, requestOptions).then(handleResponse);
@@ -123,7 +131,8 @@ function update(user) {
 function remove(id) {
   const requestOptions = {
     method: "DELETE",
-    headers: authHeader()
+    headers: { "Content-Type": "application/json" },
+    credentials: 'include',
   };
 
   return fetch(`${base_url}/users/` + id, requestOptions).then(handleResponse);
