@@ -2,17 +2,25 @@ import React from "react";
 import {
   Jumbotron, Card, CardBody
 } from "reactstrap";
-import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import { itemActions } from "../Actions";
+import { history } from '../Helpers';
+import Notifications, { notify } from 'react-notify-toast';
 
 
 export class Item extends React.Component {
-    constructor(props) {
+
+  constructor(props) {
     super(props);
     this.state = {
-      loggedIn: true,
-      isAdmin:true,
-      currentState: "not-panic",
-      items: []
+      items: [],
+      item: {
+        name: "",
+        quantity: 0,
+        description: "",
+        images: null,
+        price: 0.0
+      }
     };
 
     this.onAfterInsertRow = this.onAfterInsertRow.bind(this);
@@ -20,55 +28,84 @@ export class Item extends React.Component {
     this.onAfterDeleteRow = this.onAfterDeleteRow.bind(this);
 
 
-    }  
+  }
 
-    onAfterInsertRow(row) {
-      let newRowStr = '';
-    
-      for (const prop in row) {
-        newRowStr += prop + ': ' + row[prop] + ' \n';
-      }
-    
-      this.setState({ items: [...this.state.items, row.target] });
 
+  // handleChange(event) {
+  //   const { id, value } = event;
+  //   const { items } = this.state.items;
+  //   let newPostCopy = JSON.parse(JSON.stringify(this.state.items));
+  //   newPostCopy[id] = value;
+  //   this.setState({
+  //     item: newPostCopy
+  //   });
+  //   items.push(item);
+  // }
+
+
+  onAfterInsertRow(row) {
+
+    let newRowStr = '';
+
+    for (const prop in row) {
+      newRowStr += prop + ': ' + row[prop] + ' \n';
     }
-    onAfterDeleteRow(rowKeys) {
-      this.setState({ items: [...this.state.items, row.target] });
+    this.setState({ item: item })
+    console.log(this.state);
+
+    const { item } = this.state;
+    const { dispatch } = this.props;
+
+    if (item.name && item.quantity && item.description && item.images && price) {
+      itemActions
+        .create(item.name, item.quantity, item.description, item.images, item.price)
+        .then(post => {
+          notify.show("Item Added!!", "success", 5000);
+        })
+        .catch(error => {
+          notify.show("Error Adding Item.", "error", 5000);
+          this.setState({ error: error });
+        });
+      var result = this.refs.table.handleAddRow(item);
     }
-   
+  }
+  onAfterDeleteRow(rowKeys) {
+    this.setState({ items: [...this.state.items, row.target] });
+  }
 
   componentDidMount() {
     fetch('/items', {
-      headers : { 
+      headers: {
         accept: 'application/json'
-       }
+      }
 
-    }) 
+    })
       .then(res => res.json())
       .then(items => this.setState({ items }));
   }
   render() {
-        let items = this.state.items
-        let options = {
-          afterInsertRow: this.onAfterInsertRow,
-          afterDeleteRow: this.onAfterDeleteRow  // A hook for after droping rows.
-          // A hook for after insert rows
-        };
-        const selectRowProp = {
-          mode: 'radio'
-        };
+    let items = this.state.items;
+    let item = this.state.item;
+    let options = {
+      afterInsertRow: this.onAfterInsertRow,
+      afterDeleteRow: this.onAfterDeleteRow           // A hook for after droping rows.
+      // A hook for after insert rows
+    };
+    const selectRowProp = {
+      mode: 'radio'
+    };
     return (
       <Jumbotron>
         <Card>
           <CardBody>
-      <BootstrapTable data={ items } insertRow={ true } deleteRow={ true } selectRow={ selectRowProp } search={ true } options={ options }>
-          <TableHeaderColumn dataField='id' isKey>Item ID</TableHeaderColumn>
-          <TableHeaderColumn dataField='name'>Item Name</TableHeaderColumn>
-          <TableHeaderColumn dataField='price'>Item Price</TableHeaderColumn>
-          <TableHeaderColumn dataField='quantity'>Item Quantity</TableHeaderColumn>
-      </BootstrapTable>
-      </CardBody>
-      </Card>
+            <BootstrapTable data={this.state.items} insertRow={true} deleteRow={true} selectRow={selectRowProp} search={true} options={options} >
+              <TableHeaderColumn dataField='id' isKey={true}>Item ID</TableHeaderColumn>
+              <TableHeaderColumn dataField='name'>Item Name</TableHeaderColumn>
+              <TableHeaderColumn dataField='price'>Item Price</TableHeaderColumn>
+              <TableHeaderColumn dataField='quantity'>Item Quantity</TableHeaderColumn>
+            </BootstrapTable>
+          </CardBody>
+        </Card>
       </Jumbotron>
     );
   }
