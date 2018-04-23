@@ -48,15 +48,17 @@ export class User extends React.Component {
     }
 
   componentDidMount() {
-    fetch('/orders', {
+    fetch('http://tge.mybluemix.net/users', {
       headers : { 
         accept: 'application/json',
-
-       }
-
+       },
+       credentials: 'include',
     }) 
       .then(res => res.json())
-      .then(users => this.setState({ users }));
+      .then(users => {
+        users.map(user => user.username = user.Credential ? user.Credential.email : 'Facebook');
+        this.setState({ users: users });
+      });
   }
   render() {
         let users = this.state.users
@@ -65,19 +67,17 @@ export class User extends React.Component {
           afterDeleteRow: this.onAfterDeleteRow  // A hook for after droping rows.
           // A hook for after insert rows
         };
-        const selectRowProp = {
-          mode: 'radio'
-        };
+        // const selectRowProp = {
+        //   mode: 'radio'
+        // };
     return (
       <Jumbotron>
         <Card>
           <CardBody>
-      <BootstrapTable data={ users } insertRow={ true } deleteRow={ true } selectRow={ selectRowProp } search={ true } options={ options }>
-          <TableHeaderColumn dataField='id' isKey>Item ID</TableHeaderColumn>
-          <TableHeaderColumn dataField='user'>Item Name</TableHeaderColumn>
-          <TableHeaderColumn dataField='address'>Item Price</TableHeaderColumn>
-          <TableHeaderColumn dataField='order_item'>Item Quantity</TableHeaderColumn>
-          <TableHeaderColumn dataField='status'>Item Quantity</TableHeaderColumn>
+      <BootstrapTable data={ users } insertRow={ true } deleteRow={ true } search={ true } options={ options }>
+          <TableHeaderColumn width='100' dataField='id' isKey>User ID</TableHeaderColumn>
+          <TableHeaderColumn width='200' dataField='username'>Username</TableHeaderColumn>
+          <TableHeaderColumn dataField='type'>Role</TableHeaderColumn>
       </BootstrapTable>
       </CardBody>
       </Card>

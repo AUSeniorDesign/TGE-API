@@ -65,11 +65,8 @@ module.exports = function(app, passport, square) {
 
   // Checkout w/ Sqaure, convert to Order
   //router.post("/checkout/square", passport.isLoggedIn, square.checkout function(req, res, next) {
-  router.post("/checkout/square", passport.isLoggedIn, function(
-    req,
-    res,
-    next
-  ) {
+  router.post("/checkout/square", passport.isLoggedIn, function(req, res, next) {
+    // Create New Order
     Order.create({
       UserId: req.user.id
     })
@@ -79,6 +76,8 @@ module.exports = function(app, passport, square) {
           include: [Item]
         })
           .then(cartItems => {
+
+            // Add all cart items to the Order we just made
             cartItems.forEach(item => {
               OrderItem.create({
                 ItemId: item.id,
@@ -86,6 +85,7 @@ module.exports = function(app, passport, square) {
               });
             });
 
+            // Empty Cart Out
             CartItem.destroy({
               where: { UserId: req.user.id }
             });

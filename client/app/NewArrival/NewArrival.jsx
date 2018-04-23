@@ -143,28 +143,11 @@ export class NewArrival extends React.Component {
 
 
   render() {
-    const selectRow = {
-      mode: 'checkbox',
-      clickToSelect: true,
-    };
+    // const selectRow = {
+    //   // mode: 'checkbox',
+    //   clickToSelect: true,
+    // };
     let { newPost, submitted, dropzone, posts } = this.state;
-    // let p = [
-    //   {
-    //     id: '1',
-    //     description: "Post ID",
-    //     store: 'Nashville'
-    //   },
-    //   {
-    //     id: '2',
-    //     description: "Post ID",
-    //     store: 'Nashville'
-    //   },
-    //   {
-    //     id: '3',
-    //     description: "Post ID",
-    //     store: 'Nashville'
-    //   }
-    // ];
 
     let columns = [
       {
@@ -173,7 +156,8 @@ export class NewArrival extends React.Component {
       },
       {
         dataField: 'description',
-        text: "Post Description"
+        text: "Post Description",
+        style: { maxWidth: '200px'}
       },
       {
         dataField: 'store',
@@ -257,14 +241,15 @@ export class NewArrival extends React.Component {
           <CardBody>
           <h1 className="display-4">All Posts</h1>
           <br />
-          <button className="btn btn-success" onClick={() => {
+          {/* <button className="btn btn-success" onClick={() => {
               this.deletePost(this.keyField);
-            }}>Delete Post</button>
+            }}>Delete Post</button> */}
           <BootstrapTable
+            style={{ width: '100%' }}
             keyField='id'
             data={posts}
             columns={columns}
-            selectRow={ selectRow } 
+            // selectRow={ selectRow } 
             cellEdit={ cellEditFactory({ mode: 'dbclick', 
                beforeSaveCell: (oldValue, newValue, row, column) => { console.log('Before Saving Cell!!'); },
             afterSaveCell: (oldValue, newValue, row, column) => { console.log('After Saving Cell!!'); } }) }
