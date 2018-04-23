@@ -84,7 +84,7 @@ export class Order extends React.Component {
         this.setState({ orders: orderList });
       })
       .catch(error => {
-        notify.show("Error Adding Item.", "error", 5000);
+        // notify.show("Error Adding Item.", "error", 5000);
         this.setState({ error: error });
       });
 
