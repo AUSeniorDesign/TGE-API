@@ -9,6 +9,7 @@ module.exports = merge(common, {
     proxy: {
       "/appmetrics-dash": "http://localhost:3100",
       "/health": "http://localhost:3100"
+
     }
   }
 });

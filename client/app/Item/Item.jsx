@@ -1,106 +1,112 @@
 import React from "react";
-import { Button, Jumbotron } from "reactstrap";
-import Dropzone from "react-dropzone";
-import BootstrapTable from "react-bootstrap-table-next";
-import filterFactory, { textFilter } from "react-bootstrap-table2-filter";
+import {
+  Jumbotron, Card, CardBody
+} from "reactstrap";
+import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import { itemActions } from "../Actions";
+import { history } from '../Helpers';
+import Notifications, { notify } from 'react-notify-toast';
 
 
 export class Item extends React.Component {
+
   constructor(props) {
     super(props);
-
-    this.state = { files: [], dropzone: null };
-  }
-
-  onDrop(files) {
-    this.setState({
-      files
-    });
-  }
-
-  priceFormatter(cell, row) {
-    return '<i class="glyphicon glyphicon-usd"></i> ' + cell;
-  }
-
-  render() {
-    let { files, dropzone } = this.state;
-
-    let products = [
-      {
-        id: 1,
-        name: "Item name 1",
-        price: 100
-      },
-      {
-        id: 2,
-        name: "Item name 2",
-        price: 100
-      },
-      {
-        id: 3,
-        name: "Item name 3",
-        price: 100
-      },
-      {
-        id: 4,
-        name: "Item name 4",
-        price: 100
-      },
-      {
-        id: 5,
-        name: "Item name 5",
-        price: 100
-      },
-    ];
-
-    let columns = [
-      {
-        dataField: "id",
-        text: "Product ID"
-      },
-      {
-        dataField: "name",
-        text: "Product Name",
-        filter: textFilter()
-      },
-      {
-        dataField: "price",
-        text: "Product Price"
+    this.state = {
+      items: [],
+      item: {
+        name: "",
+        quantity: 0,
+        description: "",
+        images: null,
+        price: 0.0
       }
-    ];
+    };
 
+    this.onAfterInsertRow = this.onAfterInsertRow.bind(this);
+
+    this.onAfterDeleteRow = this.onAfterDeleteRow.bind(this);
+
+
+  }
+
+
+  // handleChange(event) {
+  //   const { id, value } = event;
+  //   const { items } = this.state.items;
+  //   let newPostCopy = JSON.parse(JSON.stringify(this.state.items));
+  //   newPostCopy[id] = value;
+  //   this.setState({
+  //     item: newPostCopy
+  //   });
+  //   items.push(item);
+  // }
+
+
+  onAfterInsertRow(row) {
+
+    let newRowStr = '';
+
+    for (const prop in row) {
+      newRowStr += prop + ': ' + row[prop] + ' \n';
+    }
+    this.setState({ item: item })
+    console.log(this.state);
+
+    const { item } = this.state;
+    const { dispatch } = this.props;
+
+    if (item.name && item.quantity && item.description && item.images && price) {
+      itemActions
+        .create(item.name, item.quantity, item.description, item.images, item.price)
+        .then(post => {
+          notify.show("Item Added!!", "success", 5000);
+        })
+        .catch(error => {
+          notify.show("Error Adding Item.", "error", 5000);
+          this.setState({ error: error });
+        });
+      var result = this.refs.table.handleAddRow(item);
+    }
+  }
+  onAfterDeleteRow(rowKeys) {
+    this.setState({ items: [...this.state.items, row.target] });
+  }
+
+  componentDidMount() {
+    fetch('/items', {
+      headers: {
+        accept: 'application/json'
+      }
+
+    })
+      .then(res => res.json())
+      .then(items => this.setState({ items }));
+  }
+  render() {
+    let items = this.state.items;
+    let item = this.state.item;
+    let options = {
+      afterInsertRow: this.onAfterInsertRow,
+      afterDeleteRow: this.onAfterDeleteRow           // A hook for after droping rows.
+      // A hook for after insert rows
+    };
+    const selectRowProp = {
+      mode: 'radio'
+    };
     return (
-      <div>
-        <Jumbotron>
-          <h1 className="display-4">Items Upload</h1>
-          <br/>
-          <Dropzone
-            className="dropzone"
-            ref={node => {
-              dropzone = node;
-            }}
-            onDrop={this.onDrop.bind(this)}
-          >
-            <p>Drag .csv file here or click Browse Files to upload</p>
-          </Dropzone>
-          <br />
-          <Button color="primary">Browse Files</Button>
-        </Jumbotron>
-        <br />
-        <Jumbotron>
-          <h1 className="display-4">All Items</h1>
-          <br/>
-          <BootstrapTable
-            keyField="id"
-            data={products}
-            columns={columns}
-            striped
-            hover
-            condensed
-            filter={ filterFactory() }
-          />
-        </Jumbotron>
-      </div>
+      <Jumbotron>
+        <Card>
+          <CardBody>
+            <BootstrapTable data={this.state.items} insertRow={true} deleteRow={true} selectRow={selectRowProp} search={true} options={options} >
+              <TableHeaderColumn dataField='id' isKey={true}>Item ID</TableHeaderColumn>
+              <TableHeaderColumn dataField='name'>Item Name</TableHeaderColumn>
+              <TableHeaderColumn dataField='price'>Item Price</TableHeaderColumn>
+              <TableHeaderColumn dataField='quantity'>Item Quantity</TableHeaderColumn>
+            </BootstrapTable>
+          </CardBody>
+        </Card>
+      </Jumbotron>
     );
   }
 }
