@@ -43,7 +43,7 @@ function getAll() {
     credentials: 'include',
   };
 
-  return fetch(`${base_url}/users/`, requestOptions).then(handleResponse);
+  return fetch(`${base_url}/feed/`, requestOptions).then(handleResponse);
 }
 
 function update(user) {
@@ -54,7 +54,7 @@ function update(user) {
     body: JSON.stringify(user)
   };
 
-  return fetch(`${base_url}/users/` + user.id, requestOptions).then(handleResponse);
+  return fetch(`${base_url}/feed/` + user.id, requestOptions).then(handleResponse);
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript

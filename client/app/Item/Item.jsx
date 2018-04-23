@@ -74,14 +74,16 @@ export class Item extends React.Component {
   }
 
   componentDidMount() {
-    fetch('/items', {
-      headers: {
-        accept: 'application/json'
-      }
-
+    const { itemList } = this.state;
+    itemActions.getAll()
+    .then(itemList => {
+      this.setState({ items: itemList });
     })
-      .then(res => res.json())
-      .then(items => this.setState({ items }));
+    .catch(error => {
+      notify.show("Error Adding Item.", "error", 5000);
+      this.setState({ error: error });
+    });
+
   }
   render() {
     let items = this.state.items;
@@ -98,7 +100,7 @@ export class Item extends React.Component {
       <Jumbotron>
         <Card>
           <CardBody>
-            <BootstrapTable data={this.state.items} insertRow={true} deleteRow={true} selectRow={selectRowProp} search={true} options={options} >
+            <BootstrapTable data={items} insertRow={true} deleteRow={true} selectRow={selectRowProp} search={true} options={options} >
               <TableHeaderColumn dataField='id' isKey={true}>Item ID</TableHeaderColumn>
               <TableHeaderColumn dataField='name'>Item Name</TableHeaderColumn>
               <TableHeaderColumn dataField='price'>Item Price</TableHeaderColumn>

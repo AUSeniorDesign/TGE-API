@@ -5,7 +5,9 @@ export const orderService = {
     remove
   };
   
-  const base_url = "http://tge.mybluemix.net"
+   const base_url = "http://tge.mybluemix.net"
+  // const base_url = "http://0.0.0.0:3000"
+
    function create(name, quantity, description, images,  price ) {
     let formData = new FormData();
     formData.append('name', name);
