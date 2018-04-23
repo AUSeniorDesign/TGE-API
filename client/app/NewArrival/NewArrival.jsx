@@ -126,6 +126,7 @@ export class NewArrival extends React.Component {
 
           <h3 className="display-6">Picture</h3>
 
+
           {!submitted &&
             newPost.image && (
               <div>
