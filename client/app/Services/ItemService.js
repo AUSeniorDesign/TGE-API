@@ -1,4 +1,4 @@
-export const newArrivalService = {
+export const itemService = {
   create,
   update,
   getAll,
@@ -6,26 +6,30 @@ export const newArrivalService = {
 };
 
 const base_url = "http://tge.mybluemix.net"
-// const base_url = "http://0.0.0.0:3000"
-
-function create(store, description, file) {
+ function create(name, quantity, description, images,  price ) {
   let formData = new FormData();
-  formData.append('store', store);
+  formData.append('name', name);
+  formData.append('quantity', quantity);
+  // formData.append('sku', sku);
   formData.append('description', description);
-  formData.append('image', file);
-  console.log(formData);
+  formData.append('images', images);
+  // formData.append('productIdType', productIdType);
+  // formData.append('brand', brand);
+  formData.append('price', price);
 
+
+  console.log(formData);
   const requestOptions = {
     method: "POST",
     credentials: 'include',
     body: formData
   };
 
-  return fetch(`${base_url}/feed`, requestOptions)
+  return fetch(`${base_url}/items`, requestOptions)
     .then(response => {
-      
+      // Check if user logged in
       if (!response.ok) {
-        console.log(response.json());
+        // Not logged in, 
         return Promise.reject(response.statusText);
       }
 
@@ -43,18 +47,18 @@ function getAll() {
     credentials: 'include',
   };
 
-  return fetch(`${base_url}/feed/`, requestOptions).then(handleResponse);
+  return fetch(`${base_url}/items/`, requestOptions).then(handleResponse);
 }
 
-function update(user) {
+function update(item) {
   const requestOptions = {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     credentials: 'include',
-    body: JSON.stringify(user)
+    body: JSON.stringify(item)
   };
 
-  return fetch(`${base_url}/feed/` + user.id, requestOptions).then(handleResponse);
+  return fetch(`${base_url}/items/` + item.sku, requestOptions).then(handleResponse);
 }
 
 // prefixed function name with underscore because delete is a reserved word in javascript
@@ -65,7 +69,7 @@ function remove(id) {
     credentials: 'include',
   };
 
-  return fetch(`${base_url}/users/` + id, requestOptions).then(handleResponse);
+  return fetch(`${base_url}/items/` + id, requestOptions).then(handleResponse);
 }
 
 function handleResponse(response) {
